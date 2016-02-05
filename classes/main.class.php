@@ -1,5 +1,13 @@
 <?php
 
+$composer_autoload = dirname(__FILE__) . '/../vendor/autoload.php';
+
+if(!file_exists($composer_autoload)) {
+    $dir = realpath(dirname(__FILE__) . '/../');
+    die("Please run composer in $dir");
+}
+require_once(dirname(__FILE__) . '/../vendor/autoload.php');
+
 //======================================================
 // Copyright (C) 2004 John W. Holmes, All Rights Reserved
 //
@@ -22,15 +30,15 @@
 //Start Session
 session_start();
 
+//Turn off runtime escaping of quotes
+if(function_exists('set_magic_quotes_runtime')) {
+    set_magic_quotes_runtime(0);
+}
 //Set Error Reporting Level to not
 //show notices or warnings
 error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 //error_reporting(E_ALL);
 
-//Turn off runtime escaping of quotes
-if(function_exists('set_magic_quotes_runtime')) {
-    set_magic_quotes_runtime(0);
-}
 
 //Define CONSTANTS
 define('BY_AID',1);
