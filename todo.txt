@@ -1,0 +1,23 @@
+TODO:
+
+  2004-07-07
+
+    Add JavaScript elapsed time clock to surveys with time limit
+
+    Add Numeric and Date answer types with ranges
+
+  2004-01-09
+
+    Add ability to list text answers from newest -> latest
+    and latest -> newest.
+
+  2003-11-04
+
+    Fix concurrency issues. If a lot of people move questions
+    around in the same survey at the same time, it could
+    cause trouble.
+
+  2003-10-01
+
+    Add more graphical representations of the answers
+    to questions, such as pie graph, etc

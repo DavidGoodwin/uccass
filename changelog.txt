@@ -1,0 +1,871 @@
+Version 1.8.1
+
+  2005-05-31
+
+    Added option to choose different character sets during
+    installation to cater to international sites
+
+    Fixed bug that added quotes and slashes around
+    answer values when adding more text boxes
+
+Version 1.8.0
+
+  2004-11-06
+
+    Removed "group" feature from answer values
+    DB: Renamed "group_id" column in answer_values table
+    to "numeric_value"
+
+    Added numeric value to each answer value for
+    MM and MS answer types to optionally be used in CSV
+    exports
+
+  2004-11-02
+
+    Added lookbacks
+
+  2004-09-15
+
+    Added preview option while editing surveys
+
+    Fixed v1.06->v1.8 upgrade that did not correctly
+    set the users_sequence value
+
+  2004-09-13
+
+    Fixed bug that send duplicate emails to users and invitees
+
+    Fixed bug for setting template when creating surveys
+
+    Fixed configuration bug for detecting empty config
+    options upon installation
+
+    Moved "save" option for users and invitees to action dropdown
+    to clear up UI confusion
+
+    Fixed bug that cleared "sent invite code" flag when re-saving
+    invitee data
+
+  2004-08-25
+
+    Fixed bug that prevented checkboxes from showing up
+    for deleting individual text results
+
+    Fixed bug to correctly hide create survey privileges
+    when survey creation is set to public
+
+  2004-08-22
+
+    Updated ADOdb website listed in documentation
+
+    Added upgrade from v1.06 to 1.8 option during installation
+
+    Removed "administrator password" setting from survey.ini.php
+    file. Default administrator user will now be created during
+    the install process and added features allow other to be created.
+
+    Added feature to reset completed survey records. This
+    will not delete any provided answers, but resets the
+    system to think users have not completed the surveys
+    at all. Only applies to IP, UsernamePassword and
+    Invitation Only access control types.
+
+  2004-08-17
+
+    Added access control setup to editsurvey.class.php.
+    Access controls include None, IP, Cookie, Username
+    and Password or Invitation Only.
+
+    Added feature for surveys to be flagged as hidden. Hidden
+    surveys will not show on main page at all and must
+    be accessed directly by their URLs
+
+    Added feature for results to be marked as public
+    or private. If private, "View Results" columns
+    appear on the User and Invitee list.
+
+    Added feature for invite codes to be alphanumeric
+    codes of a user-set length, i.e. "ab35swq4ST" or
+    have the codes be two english words where each word
+    is between 4 - 12 characters, i.e. "cilantro-randomly"
+    or "windrowing-apprenticed". List of around 113,000
+    words available for choosing is contained in utils/words.txt
+    and was compiled from the Moby Word List by Grady Ward
+    (http://www.gutenberg.net/etext/3201).
+
+    Added feature to send Username and Password reminder by
+    email to users and to send Invitation Notice to invitees.
+    Email templates added to Default template
+
+    Added ability to move users between the User list and Invitee
+    list when using Invitation Only access control
+
+    Added ability to set how often users are allowed to take
+    surveys if using an access control other than None.
+
+    Added features to show the date users were sent Username and Password
+    or Invitation information and the last date they completed the
+    survey along with the total number of times they completed the survey.
+
+    Changed new survey procedure to prompt for a default username
+    and password for a user that'll be given edit privileges
+
+  2004-07-28
+
+    Fixed bug that prevented Matrix questions from being
+    closed correctly when followed by an N, S or T answer type
+
+    Rewrote editsurvey.class.php to separate the logic
+    into individual methods instead of one huge function
+    and complex switches
+
+  2004-07-23
+
+    Divided survey.class.php into individual classes
+    to handle general actions of the survey system.
+    Most classes inherit general functions from the Main
+    class in main.class.php. Moved all class files to
+    classes/ folder
+
+    Separated "safe string" methods into a standalone
+    class in safestring.class.php
+
+    Added ability to create administrator users and users who
+    have permission to create surveys from the Admin page.
+    Name, email, username and password fields are available
+    for each user. Users can be deleted from the same interface.
+
+    Creating a new survey now presents a login form if
+    create access is set to 'private' in survey.ini.php
+
+    Removed private survey and private results drop downs
+    from main survey page. All surveys (unless hidden) will
+    be shown and users will be prompted for username/password
+    or invitation code upon entering the survey or requesting
+    the results.
+
+    Removed survey access, results access and edit password
+    settings from edit survey properties
+
+  2004-07-15
+
+    DB: Added "users" "users_sequence" and
+        "taken_surveys" tables to database
+        to keep track of users for access
+        control and to track what and when
+        surveys were taken by individual users
+
+    DB: Added "hidden" column to "surveys" table
+
+    Added "creation_access" setting to survey.ini.php
+    file to control whether access to create new surveys
+    is open to the public or restricted to administrators
+    and the users they create and designate.
+
+    Changed to use of ADOdb Quote() method instead
+    of addslashes() for escaping text to be inserted
+    into the database. Required changes in many queries
+    to remove quotes around variables since Quote()
+    supplies them automatically.
+
+Version 1.06
+
+  2004-07-18
+
+    Fixed bug that added page breaks to surveys
+    other than the one being edited when inserting
+    new page breaks.
+
+    Fixed bug that did not remove timing data
+    when clearing the results of a survey
+
+    Fixed bug for HTML labels on answer values to
+    make them unique for each question based upon
+    the question ID and the answer value ID
+
+Version 1.05
+
+  2004-07-13
+
+    Added [Logout] link to main page to log out
+    from administrator mode and editing surveys
+
+    Added [?] and [Help] links on various pages
+    linking to the documentation explaining
+    those settings or actions
+
+    Fixed bug that did not allow page breaks to
+    be deleted from the beginning of surveys
+    because of non-existant dependencies
+
+    Added support for "Update Configuration Only"
+    during installation process. This will allow you
+    to re-run install.php but not have it update the
+    database unless you choose to.
+
+    Added ability to delete individual text answers
+    from results page when logged in as administrator
+    or logged in to edit the specific survey
+
+    Updated documentation to include explanations
+    of the new features since v1.04
+
+    Modified upgrade script to work with new
+    ADOdb features introduced in survey.class.php
+
+  2004-07-07
+
+    Replaced references to NULL values in
+    queries to use ADOdb IfNull() method
+    to be more compatible across different databases
+
+    Added time tracking for completing survey
+    and upon quitting survey. Results page
+    now shows average, minimum and maximum
+    completion time for the survey as well as
+    the average time before quitting the survey.
+
+    Added individual date format setting to each
+    survey on survey properties page. Default
+    setting is what's in survey.ini.php but his will
+    allow it to be changed on a per-survey basis
+    (for table results and CSV export).
+
+    Added support for time limits on surveys in
+    number of minutes. If the number of minutes
+    is exceeded when the current survey page is submitted,
+    then it will not be saved. All previous answers will
+    be saved however. The user is shown a message
+    if they exceed the time limit saying their last
+    survey page was not saved.
+
+    TPL: Modified message.tpl template (was not used
+    prior to this)
+
+    TPL: Added display of time limit and approximate
+    elapsed time to take_survey.tpl
+
+  2004-07-06
+
+    Replaced all MySQL auto_increment and LIMIT
+    dependant code to use ADOdb->GenID() and
+    ->SelectLimit() to make the system compatible
+    with more databases
+
+    Changed date tracking in results and results_text
+    tables to Unix timestamps to be compatible
+    with more databases
+
+    Added "date_format" setting to survey.ini.php
+    file to control default date format for "table" and
+    "CSV export" result viewing options. This setting
+    also controls the display of the creation date
+    on the survey properties page.
+
+  2004-06-30
+
+    Fixed bug in the date calculations for setting
+    start and end dates of surveys
+
+    Fixed bug in query using || instead of OR that
+    will cause problems on database systems other than
+    MySQL
+
+    DB: Altered name of surveys.start
+    and surveys.end columns to
+    "start_date" and "end_date" to avoid using
+    reserved words in some database systems
+
+  2004-06-21
+
+    New surveys created without copying an existing
+    survey are now given a default set of answer
+    types and values (matching Example Survey for now)
+
+    Moved settings for file and html paths
+    to survey.ini.php file. UCCASS still determines
+    expected values at installation time so most
+    installations should not need to edit these
+    values. If the PHP method fails to detect the
+    correct path then it can be corrected at
+    installation time, however.
+
+  2004-06-03
+
+    Fixed bug to remove escaped characters from
+    configuration data if magic_quotes_gpc is enabled
+
+    Added new special_results class that inherits the
+    main survey class to add a special "table" results
+    view where each survey result is on it's own row. The
+    class also adds the functionality to export to CSV.
+
+    TPL: Added results_table.tpl to Default template. This
+    template controls the layout of the "table" view of results.
+
+    Added code to ensure filters were carried over to table results
+    view and CSV export file
+
+    TPL: Modified Copyright notice in main_footer.tpl in
+    Default template
+
+    Added SAFE_STRING_ESC constant that can be used to force
+    escaping of data (using addslashes) that requires it (such as
+    data read from the database that must be reinserted).
+
+  2004-05-27
+
+    Added 'Show' dependency. Show will override any
+    'Hide' dependencies. The default action is to Show
+    the question, so in order for this to be effective,
+    you need two groups of dependencies: one to 'show'
+    if answer is 1,2,3 and one to 'hide' if answer is
+    4,5,6, for example. If 1 and 4 are chosen, the
+    question will be shown.
+
+    DB: Modified indexes on dependencies table to
+    allow multiple dependencies on the same question
+    and answer because of the 'Show' dependency
+
+  2004-05-24
+
+    Changed installation process to look for comments in
+    the survey.sql file beginning with both '#' and '--'
+
+    Updated documentation to reflect all changes to
+    the survey system.
+
+  2004-05-23
+
+    Rewrote code inserting into the database or displaying
+    user values to display according to the survey_text_mode
+    and user_text_mode. survey_text_mode controls the
+    text for the questions, answer_values and survey properties.
+    user_text_mode controls anything coming from the user as an
+    answer to the surveys. Options include Text Only, Limited HTML,
+    and Full HTML. Limited HTML allows b, i, u, div, span, a, and img
+    tags. Full HTML allows anything and IS A SECURITY RISK.
+    Full HTML should not be used for user_text_mode and should
+    only be used for survey_text_mode in a strictly controlled
+    environment.
+
+    Added use of {$html} and {$images_html} within any
+    Limited HTML and Full HTML text modes.
+
+    DB: Added 'survey_text_mode' and 'user_text_mode'
+    int(11) not null default 0 columns to surveys table
+
+    INI: Added setting to survey.ini.php file to
+    administrative setting of survey_text_mode and
+    user_text_mode. This defines the upper limit of
+    what can actually be used within the system
+
+    Added code to carry the port number in
+    links if it's not 80 or 443.
+
+    Fixed bug that would leave behind orphaned
+    answer_values in the database when surveys
+    were deleted.
+
+  2004-05-19
+
+    Fixed bug that caused the take_survey page to
+    time out if certain dependency conditions were
+    met (if last question on next page was determined
+    to be "hidden" based upon current answers, then
+    the next page of questions would not display).
+
+  2004-05-17
+
+    Fixed various errors in install process that
+    would not recognize DELETE TABLE IF EXISTS
+    queries in SQL file
+
+    Added "New Installation" or "Upgrade" option
+    to installation process.
+
+    Database upgrade from v1.04 to v1.05 is automated
+    within upgrades/upgrade_104_105.php file
+
+    Added 'Lx' label to questions with 'N' answer
+    type so they can be included in 'Insert after Number'
+    list on Edit Survey Questions page. Resulted in
+    Bug #2 being fixed.
+
+    Removed 'Welcome' and 'Thank You' texts from
+    survey. If desired, these can be added as
+    questions with an 'N' answer type to the beginning
+    and end of the survey. Results in the option
+    for simple one-page surveys now.
+
+    DB: Removed 'welcome_text' and 'thank_you_text'
+    columns from 'surveys' table
+
+    After completion of the survey, users can now
+    be redirected to the main page, results page,
+    or a custom URL.
+
+    DB: Added 'redirect_page' VARCHAR(255) NOT NULL
+    column to 'surveys' table
+
+    TPL: Edited edit_survey_properties.tpl template
+    to add input elements for 'redirect page'
+
+  2004-05-15
+
+    Added name of template to all Smarty
+    fetch() methods to fix bug that did
+    not properly load different templates
+
+  2004-05-14
+
+    Upgraded bundled ADOdb version to 4.22
+
+    TPL: Modified some template names so that they
+    were under 30 characters remove problems
+    on some Apple systems
+
+        Old Name => New Name
+        edit_survey_edit_answer_type_choose.tpl => edit_survey_edit_atc.tpl
+        take_survey_question_MatrixFooter.tpl => take_survey_question_MF.tpl
+        take_survey_question_MatrixHeader.tpl => take_survey_question_MH.tpl
+        take_survey_question_MM_Dropdown.tpl => take_survey_question_MM_D.tpl
+        take_survey_question_MM_Horizontal.tpl => take_survey_question_MM_H.tpl
+        take_survey_question_MM_Matrix.tpl => take_survey_question_MM_M.tpl
+        take_survey_question_MM_Vertical.tpl => take_survey_question_MM_V.tpl
+        take_survey_question_MS_Dropdown.tpl => take_survey_question_MS_D.tpl
+        take_survey_question_MS_Horizontal.tpl => take_survey_question_MS_H.tpl
+        take_survey_question_MS_Matrix.tpl => take_survey_question_MS_M.tpl
+        take_survey_question_MS_Vertical.tpl => take_survey_question_MS_V.tpl
+        edit_survey_edit_answer_type.tpl => edit_survey_edit_at.tpl
+        edit_survey_edit_answer_type_choose.tpl => edit_survey_edit_atc.tpl
+        edit_survey_new_answer_type.tpl => edit_survey_new_at.tpl
+
+    Changed capture of IP address to $_SERVER['REMOTE_ADDR']
+    instead of $_SERVER['REMOTE_ADDR'].
+
+    Added checks for $_SERVER['SCRIPT_FILENAME'] and
+    $_SERVER['PHP_SELF'] when determining paths
+
+    TPL: Minor layout adustments to edit_survey_new_at.tpl template
+    to reposition input elements
+
+    TPL: Minor change to take_survey_question_S and _T.tpl files
+    to vertically position input elements.
+
+Version 1.04
+
+  2004-04-21
+
+    Intial Public Release
+
+  2004-04-20
+
+    Removed DELETE ... USING queries and replaced them
+    with separate SELECT and DELETE queries to make
+    the script compatible with MySQL 3.23 and other databases
+
+    Modified edit_survey_edit_answer_type template to
+    include a count of all questions using the requested
+    answer type. If the answer type is being used, a warning
+    is shown detailing how changes will affect already supplied
+    results of the survey. The answer type cannot be deleted
+    if it is in use within the survey.
+
+    Fixed bug that caused image selections to be reset when
+    new answer values were added to answer type.
+
+Version 1.02
+
+  2004-03-15
+
+    Added Affero General Public License, Initial Copyrighted Version
+
+    Fixed bug in  take_survey_question_MM templates
+    that prevented answer values from being displayed
+
+Version 1.0
+
+  2004-02-09
+
+    Final Public Domain release
+
+    Modified default template from simple
+    orange tables to a nice gray/white,
+    rounded table layout.
+
+    Completed documentation. docs/index.html
+    contains installation instructions as
+    well as explanations of all actions
+    and features.
+
+  2004-01-31
+
+    Added ability for administrator, once logged in, to
+    take private surveys without supplying a password
+
+Version 0.95.6
+
+  2004-01-13
+
+    Modified results page to look for "_left" and "_right"
+    image in bar graphs (to allow for "rounded images").
+    For example, an image setting of "bar.gif" will look for
+    "bar_left.gif" and "bar_right.gif" and if they exist,
+    put them on the left and/or right of the stretched bar
+    graph image.
+
+  2004-01-12
+
+    DB: Changed answer_values.color to answer_values.image
+        VARCHAR(255) NOT NULL DEFAULT '' column
+
+    Modified answer values to list images from the
+    template image directory as possible bar graph
+    images. Any file matching the "image_extensions"
+    configuration setting is listed in a dropdown.
+
+    Modified results page to use new, full image name
+    and grab height from the image (so it does not
+    change).
+
+Version 0.95.5
+
+  2004-01-09
+
+    The following bug fixes deal with cleaning up
+    the moving of answer types and values under
+    a specific survey instead of being global.
+
+    Fixed multiple bugs dealing with copying an
+    existing survey. All questions, dependencies,
+    and answer types and values are now copied
+    from the old survey to the new one.
+
+    Fixed bug that did not properly display
+    dependent question numbers when editing a question
+
+    Modified Delete Survey actions to also delete
+    answer types and values associated with the
+    deleted survey.
+
+    Fixed bug in get_answer_values() method that
+    prevented the correct values for the specific
+    survey from being retrieved.
+
+  2004-01-07
+
+    Added question number to Text Results page
+
+    Added display of total number of answers
+    to Text Results page and each question
+    on main Results page
+
+  2004-01-06
+
+    DB: Added "sid" INT column to answer_types table
+
+    Moved adding and editing of answers and values
+    under the "edit survey" page and permissions.
+
+    Answers and answer values are now related
+    to a specific survey instead of being global.
+    This change was made so that each survey can have
+    it's own "yes/no" question and modify it without
+    modifying the answer type or value for every
+    other survey.
+
+Version 0.95.4
+
+  2003-12-16
+
+    Added new template files for each question
+    type and orientation to be used when taking
+    the surveys.
+
+    Added ability to create Matrix questions
+
+  2003-12-14
+
+    Added replication of dependencies when choosing
+    to copy an existing survey when creating a new survey
+
+    Fixed bug that did not properly ensure text
+    questions were answered when they were required
+
+  2003-12-10
+
+    Fixed bug with program adding extra slash
+    to web address when installed at the root level
+
+    Fixed bug with handling quotes in answers
+    and passwords
+
+    Fixed bug with creating an answer value of
+    zero and it's display
+
+Version 0.95.3
+
+  2003-12-08
+
+    Added ability to delete specific dependencies
+    from questions and add additional dependencies
+    (more than three) from the "edit question" page
+
+  2003-12-06
+
+    DB: Added "template" field to "survey" table
+
+    DB: Added "color" field to "answer_values" table
+
+    DB: Added "dep_id" field to "dependencies" table
+
+  2003-12-01
+
+    Upgraded included ADOdb version to ADOdb 4.04
+
+    Added ability to choose between 7 basic colors
+    for the bar graph for each answer value
+
+  2003-11-13
+
+    Removed all demographics from survey.
+    Demographics will now be added as regular
+    MM or MS questions with the appropriate
+    answer type and will enable them to
+    have dependencies.
+
+    Adjusted options on "view results" page
+    to work from a dropdown box instead
+    of individual buttons.
+
+  2003-11-12
+
+    Added removal of dependecies when deleting
+    a survey.
+
+  2003-11-04
+
+    Added code to prevent the movement of
+    questions up or down when it'll affect
+    the dependencies of the questions. Also
+    added checks so that page breaks cannot
+    be deleted when they'll break dependencies.
+
+    Fixed Bug #4, the answer value of 0 (zero)
+    is now accepted.
+
+    Fixed Bug #5, unchecked demographics
+    are now deleted correctly when chosen
+    to do so from the Edit Demographics
+    page. Added multi-table DELETE query
+    that is only compatible with MySQL 4.0.0+
+
+    Added text filter to INI file. This is a
+    comma separated list of words that will
+    not be saved as answers if they are given
+    as the sole text in text boxes. For example,
+    answers such as "no" "n/a" and "none" will
+    not be saved (for text answers) since they
+    don't contribute anything to the results.
+
+  2003-11-03
+
+    Added ability to delete answers from the
+    Edit Answer page.
+
+    Fixed table references in queries that did not
+    include prefix variable.
+
+    Fixed Bug #3, dependencies based upon
+    multiple choice or MM questions now
+    work correctly.
+
+    Fixed Bug #1, proper number of surveys
+    that use the answer set being edited
+    is displayed.
+
+    Fixed bug in dependency logic preventing
+    questions from being properly hid or required
+    when dependencies were based upon two or more
+    questions.
+
+Version 0.95.2
+
+  2003-10-29
+
+    Added ability to hide question results from
+    the survey results page
+
+  2003-10-28
+
+    Fixed bug that did not correctly remember
+    demographic selections when coming back to
+    them.
+
+    Added feature to Hide or Require a question
+    based upon answers to previous questions.
+    Page break is automatically added if previous
+    question is on same page. (Moving questions up
+    or down or removing page breaks may break
+    dependencies at this time.)
+
+  2003-10-27
+
+    Fixed bug that did not properly retain the
+    chosen number of answers required when adding
+    a question and an error occurred.
+
+    Added ability to view results of surveys
+    with answers "grouped" or "ungrouped"
+    according to the groups set up when the
+    answer type was created.
+
+  2003-10-22
+
+    Modified result viewing to do header() redirect
+    to results page when password was POSTed to page.
+    Prevents "Page cannot be displayed" errors/messages
+    seen with some browsers.
+
+    Fixed bug with viewing "sentence" results that
+    referenced a table that was removed (results_char)
+
+    Disabled showing "Next" button for text results when the
+    number of answers retrieved from query was less than
+    the limit for "number of text results per page" in
+    the survey.ini file
+
+  2003-10-21
+
+    DB: Added `dependencies` table
+
+  2003-09-29
+
+    Added nl2br() function when displaying the
+    text of the questions to preserve formatting.
+
+  2003-09-25
+
+    Modified creating survey, taking survey,
+    survey results, and survey filters to work
+    with new answer_values table.
+
+    Moved tracking of all demographic questions
+    to Questions table on page 1. Regular questions
+    start on page 2. Moved storage of demographic
+    results to Results table.
+
+    DB: Deleted Demographics and Results_dg tables.
+
+    Added get_answer_values() method to survey class
+    to retrieve different answer values for a specific
+    answer ID (aid). Function will run a query to retrieve
+    values for the aid and store result in static array.
+    Subsequent requests for the answer values will come
+    from the array and will not trigger a query.
+
+  2003-09-18
+
+    Added JavaScript focus() call to admin_password
+    text box on admin login page.
+
+    Modified answer deletion code to work with
+    answer_values table and pass message to template
+    upon successful deletion.
+
+  2003-09-15
+
+    Modified adding new answer type to include a single
+    text box for each answer and allow grouping of answers.
+    Up to 99 answers are allowed for MM, MS, and D type
+    questions.
+
+    DB: Added answer_values table to database
+
+  2003-09-12
+
+    Added header and footer functions calls to
+    new_answer_type.php
+
+  2003-09-02
+
+    Changed multiple calls of $smarty->assign() to
+    $smarty->assign_by_ref() for performance increase
+    for large arrays.
+
+    Split edit_survey template into multiple templates, one
+    for each area of editing (questions, demographics, etc)
+
+Version 0.95.1
+
+  2003-05-02
+
+    Fixed bug that did not correctly copy first question after
+    page breaks when creating new survey and copying existing
+    survey
+
+    Fixed bug that did not correctly move questions up in the
+    question list
+
+    Added addslashes() call to question text when creating new
+    survey and copying an existing survey
+
+    Added display of Demographics to "display answers" page
+
+    Added code to make questions require an answer
+    chosen when taking the survey. Uncommented code in template
+    files to include "num_required" dropdown select box. Added
+    "markers" to designate questions that were required when
+    taking surveys or viewing results.
+
+    Added validation to prevent the number of required answers
+    for a question from being more than the number of answer
+    blocks
+
+Version 0.95
+
+  2003-05-01:
+
+    Fixed bug that would not remove all demographic questions
+    if all demographic checkboxes were unchecked
+
+    Fixed template error that would not allow users to take
+    private surveys
+
+    Fixed bug where results filter and filter text did not properly
+    clear when empty filter form was submitted
+
+    Added style.css and link in smarty/main_header.tpl file
+
+    Changed name of survey2.inc to survey.sql.inc
+
+    Added "Quit" survey button to final question page of survey
+
+    Changed Entire "add survey" process. The initial create page will
+    create a survey with default values and then redirect to the edit
+    page for the survey. This stops what is basically a "duplicating"
+    of code, one for creation and one for editing. The only drawback
+    to this change is that more "blank" surveys could be created as
+    people create surveys but do not add questions to them.
+
+    Fixed bug that did not create page breaks correctly when creating
+    new surveys by copying another
+
+    Fixed template error that created incorrect link to "Return to
+    Main" after completing or quitting a survey
+
+    Added ability to move questions up and down in the survey from the
+    edit page
+
+    Survey System tested in alternate browsers including Netscape,
+    Opera, Mozilla, and Lynx with no display problems except for one.
+    Lynx will choose the first option of a radio button group as
+    the default, even though no option was checked. This could lead
+    to skewed results if people accept the "default" answer instead
+    of taking the time to choose their own. All other browsers tested
+    leave all radio buttons unchecked when loading the page.
+
+Version 0.90
+
+    Initial private release
