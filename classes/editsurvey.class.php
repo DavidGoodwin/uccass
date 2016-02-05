@@ -238,6 +238,10 @@ class UCCASS_EditSurvey extends UCCASS_Main
         //based upon whether the user is logged in as an admin or not
         if(empty($error))
         {
+
+            //Log that a question and its answers has been removed
+            $this->log('Deleted survey #' . $sid);
+    
             //Set notice and redirect to main page
             if($this->_hasPriv(ADMIN_PRIV))
             { $this->setMessageRedirect('admin.php'); }
@@ -354,6 +358,8 @@ class UCCASS_EditSurvey extends UCCASS_Main
         }
         else
         {
+            //log that a question has been removed
+            $this->log("Removed question #$qid from survey #$sid" );
             $this->setMessageRedirect("edit_survey.php?sid=$sid&mode=questions");
             $this->setMessage('Notice','Question and answers successfully deleted.',MSGTYPE_NOTICE);
         }
@@ -383,6 +389,8 @@ class UCCASS_EditSurvey extends UCCASS_Main
         }
         else
         {
+            //log that answers have been removed
+            $this->log("Removed answers from survey #$sid" );
             //Set success message and redirect back to properties page
             $this->setMessage('Success','All answers cleared from survey',MSGTYPE_NOTICE);
         }
@@ -414,7 +422,10 @@ class UCCASS_EditSurvey extends UCCASS_Main
 
         //Show success or failure message and redirect back to properties page.
         if(empty($pr['error']))
-        { $this->setMessage('Update Success','Survey properties updated',MSGTYPE_NOTICE); }
+        { 
+            //log that a question has been removed
+            $this->log("Updated survey #{$sid}s properties");
+            $this->setMessage('Update Success','Survey properties updated',MSGTYPE_NOTICE); }
         else
         { $this->setMessage('Update Error',implode('<br />',$pr['error']),MSGTYPE_ERROR); }
     }
@@ -574,6 +585,8 @@ class UCCASS_EditSurvey extends UCCASS_Main
         //Set success or failure message and redirect to appropriate page
         if(empty($this->data['error']))
         {
+            //LOG that question was edited
+            $this->log("Question #$qid of Survey #$sid was edited");
             $this->setMessageRedirect("edit_survey.php?sid=$sid&mode=questions");
             $this->SetMessage('Notice','Question successfully edited.',MSGTYPE_NOTICE);
         }
@@ -815,7 +828,7 @@ class UCCASS_EditSurvey extends UCCASS_Main
             $dh = opendir($this->CONF['path'] . '/templates');
             while($file = readdir($dh))
             {
-                if($file != '.' && $file != '..')
+                if($file != '.' && $file != '..' && $file != '.svn')
                 {
                     $this->data['templates'][] = $this->SfStr->getSafeString($file,SAFE_STRING_TEXT);
                     if($r['template'] == $file)
@@ -1175,7 +1188,7 @@ class UCCASS_EditSurvey extends UCCASS_Main
                 else
                 {
                     $query = "UPDATE {$this->CONF['db_tbl_prefix']}questions SET page = page + 1 WHERE sid = $sid AND
-                              (page > $page) OR (page = $page AND oid > $oid)";
+                              ((page > $page) OR (page = $page AND oid > $oid))";
                     $rs = $this->db->Execute($query);
                     if($rs === FALSE)
                     { $error[] = 'Cannot insert page break: ' . $this->db->ErrorMsg(); }
@@ -1291,6 +1304,7 @@ class UCCASS_EditSurvey extends UCCASS_Main
                                 }
                             }
 
+
                             $notice = 'Question successfully added to survey.';
                         }
                     }
@@ -1305,6 +1319,8 @@ class UCCASS_EditSurvey extends UCCASS_Main
 
         if(empty($error))
         {
+            //LOG that question was added
+            $this->log("#$qid was created and added to survey #$sid");
             if(empty($notice))
             { $notice = 'Question sucessfully added to survey.'; }
             $this->setMessage('Notice',$notice,MSGTYPE_NOTICE);
@@ -1727,7 +1743,10 @@ class UCCASS_EditSurvey extends UCCASS_Main
         $this->setMessageRedirect("edit_survey.php?sid=$sid&mode=access_control");
 
         if(empty($error))
-        { $this->setMessage('Notice','Access controls sucessfully updated.',MSGTYPE_NOTICE); }
+        {
+            //LOG that surveys access control was changed
+            $this->log("Updated survey #$sid access controls");
+            $this->setMessage('Notice','Access controls sucessfully updated.',MSGTYPE_NOTICE); }
         else
         { $this->setMessage('Error',implode('<br />',$error),MSGTYPE_ERROR); }
     }
@@ -1767,14 +1786,53 @@ class UCCASS_EditSurvey extends UCCASS_Main
                         $erruid[$uid] = 1;
                     }
                     else
-                    { $input['username'] = $this->SfStr->getSafeString($_REQUEST['username'][$uid],SAFE_STRING_DB); }
-                    if(empty($_REQUEST['password'][$uid]))
                     {
-                        $error[1] = 'Password can not be empty.';
+                        $chkuid = $this->check_username_no_sid($_REQUEST['username'][$uid]);
+                        if($chkuid && $chkuid != $uid)
+                        {
+                            $error[0] = "Username '{$this->SfStr->getSafeString($_REQUEST['username'][$uid], SAFE_STRING_TEXT)}' already in use.";
+                            $erruid[$uid] = 1;
+                        }
+                        else
+                        {
+                            $input['username'] = $this->SfStr->getSafeString($_REQUEST['username'][$uid],SAFE_STRING_DB);
+                        }
+                    }
+                    
+                    // Make sure users cannot have blank passwords.
+                    $query = "SELECT password, salt FROM {$this->CONF['db_tbl_prefix']}users WHERE uid=$uid";
+                    $rs = $this->db->Execute($query);
+                    if($rs !== false)
+                    {
+                        $user_data = $rs->FetchRow($rs);
+                        if(empty($user_data['password']) && empty($_REQUEST['password'][$uid]))
+                        {
+                            $errmsg[1] = 'Password cannot be blank.';
                         $erruid[$uid] = 1;
                     }
+                        
+                        // Check if the password has changed.
+                        if(!empty($_REQUEST['password'][$uid]))
+                        {
+                            if($_REQUEST['password'][$uid] != $user_data['password']) {
+                                list($password, $salt) = $this->generateSaltedPassword($_REQUEST['password'][$uid]);
+                                $input['password'] = $this->SfStr->getSafeString($password, SAFE_STRING_DB);
+                                $input['salt'] = $this->SfStr->getSafeString($salt, SAFE_STRING_DB);
+                            }
                     else
-                    { $input['password'] = $this->SfStr->getSafeString($_REQUEST['password'][$uid],SAFE_STRING_DB); }
+                            {
+                                $input['password'] = $this->SfStr->getSafeString($user_data['password'], SAFE_STRING_DB);
+                                $input['salt'] = $this->SfStr->getSafeString($user_data['salt'], SAFE_STRING_DB);
+                            }
+                        }
+                    }
+                    elseif(!empty($_REQUEST['password'][$uid]))
+                    {
+                        $password = $_REQUEST['password'][$uid];
+                        list($password, $salt) = $this->generateSaltedPassword($password);
+                        $input['password'] = $this->SfStr->getSafeString($password, SAFE_STRING_DB);
+                        $input['salt'] = $this->SfStr->getSafeString($salt, SAFE_STRING_DB);
+                    }
 
                     //Validate privileges based upon the access control setting for the survey
                     if($access_control == AC_USERNAMEPASSWORD)
@@ -1810,18 +1868,18 @@ class UCCASS_EditSurvey extends UCCASS_Main
                             $keyword = 'inserting';
                             $uid = $this->db->GenID($this->CONF['db_tbl_prefix'].'users_sequence');
                             $query = "INSERT INTO {$this->CONF['db_tbl_prefix']}users
-                                      (uid, sid, name, email, username, password, take_priv, results_priv, edit_priv) VALUES
+                                      (uid, sid, name, email, username, password, salt, take_priv, results_priv, edit_priv) VALUES
                                       ($uid, $sid, {$input['name']}, {$input['email']}, {$input['username']}, {$input['password']},
-                                      {$input['take_priv']}, {$input['results_priv']}, {$input['edit_priv']})";
+                                      {$input['salt']}, {$input['take_priv']}, {$input['results_priv']}, {$input['edit_priv']})";
                         }
                         else
                         {
                             $keyword = 'updating';
                             $uid = (int)$uid;
                             $query = "UPDATE {$this->CONF['db_tbl_prefix']}users SET name = {$input['name']}, email = {$input['email']},
-                                      username = {$input['username']}, password = {$input['password']}, take_priv = {$input['take_priv']},
-                                      results_priv = {$input['results_priv']}, edit_priv = {$input['edit_priv']}
-                                      WHERE uid = $uid";
+                                      username = {$input['username']}, password = {$input['password']}, salt = {$input['salt']},
+                                      take_priv = {$input['take_priv']}, results_priv = {$input['results_priv']},
+                                      edit_priv = {$input['edit_priv']} WHERE uid = $uid";
                         }
 
                         $rs = $this->db->Execute($query);
@@ -1838,7 +1896,11 @@ class UCCASS_EditSurvey extends UCCASS_Main
         $this->setMessageRedirect("edit_survey.php?sid=$sid&mode=access_control");
 
         if(empty($error))
-        { $this->setMessage('Notice','User information updated sucessfully.',MSGTYPE_NOTICE); }
+        { 
+            //LOG that survey users were updated
+            $this->log("survey #$sid users were updated");
+            $this->setMessage('Notice','User information updated sucessfully.',MSGTYPE_NOTICE); 
+        }
         else
         {
             $_SESSION['update_users']['erruid'] = $erruid;
@@ -2002,7 +2064,9 @@ class UCCASS_EditSurvey extends UCCASS_Main
         $msg = "{$numemailed} of {$numtoemail} users emailed. ";
 
         if(empty($error))
-        { $this->setMessage('Notice',$msg,MSGTYPE_NOTICE); }
+        { 
+            $this->setMessage('Notice',$msg,MSGTYPE_NOTICE); 
+        }
         else
         { $this->setMessage('Error',$msg.'<br />'.implode('<br />',$error),MSGTYPE_ERROR); }
     }

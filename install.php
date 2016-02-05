@@ -59,15 +59,23 @@ if(count($_POST) > 0)
                     {
                         echo '<p><strong>Upgrade from v1.8.0 to v1.8.1 successful.</strong></p>';
                     }
+		case 'upgrade_181': // upgrade from 1.8.1 to 1.9.0
+                    include('upgrades/upgrade_181_190.php');
+                    $sql_error = $c->load_sql_file('upgrades/upgrade_181_190.sql', TRUE);
+                    $error = $error | $sql_error;
+                    if(!$error)
+                    {
+                        echo '<p><strong>Upgrade from v1.8.1 to 1.9.0 successful.</strong></p>';
+                    }
                 break;
 
                 case 'newinstallation':
                     $sql_file = 'survey.sql';
                     $error = $c->load_sql_file($sql_file) | $error;
                     if(!$error)
-                    { echo '<p><strong>New installation of v1.8.1 completed successfully.</strong></p>'; }
+                    { echo '<p><strong>New installation of v1.9.0 completed successfully.</strong></p>'; }
                     else
-                    { echo '<p><strong>There were errors while performing a new installation of v1.8.1</strong></p>'; }
+                    { echo '<p><strong>There were errors while performing a new installation of v1.9.0</strong></p>'; }
                 break;
 
                 case 'updateconfigonly':

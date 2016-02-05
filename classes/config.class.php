@@ -73,6 +73,7 @@ class UCCASS_Config
                                    <option value=\"upgrade_105\">Upgrade From v1.05</option>
                                    <option value=\"upgrade_106\">Upgrade From v1.06</option>
                                    <option value=\"upgrade_180\">Upgrade From v1.8.0</option>
+                                   <option value=\"upgrade_181\">Upgrade From v1.8.1</option>
                                  </select>
                                </td></tr><tr><td>
                                <pre>{$ini_file}</pre></td></tr>

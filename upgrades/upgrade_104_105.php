@@ -1,5 +1,4 @@
 <?php
-
 //Upgrading from 1.04 to 1.05 requires the Welcome and Thank You
 //text to be moved into the survey and the addition of a database
 //column

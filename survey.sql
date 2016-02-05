@@ -1476,7 +1476,8 @@ CREATE TABLE users (
   name varchar(50) NOT NULL default '',
   email varchar(100) NOT NULL default '',
   username varchar(25) NOT NULL default '',
-  password varchar(25) NOT NULL default '',
+  password varchar(40) NOT NULL default '',
+  salt varchar(16) NOT NULL default '',
   admin_priv int(11) NOT NULL default '0',
   create_priv int(11) NOT NULL default '0',
   take_priv int(11) NOT NULL default '0',
@@ -1494,9 +1495,9 @@ TYPE=MyISAM;
 -- Dumping data for table `users`
 --
 
-INSERT INTO users VALUES (1,0,'','','admin','password',1,1,0,0,0,0,0,NULL);
-INSERT INTO users VALUES (29,5,'','','user','password',0,0,0,0,1,0,0,NULL);
-INSERT INTO users VALUES (25,2,'','','user','password',0,0,1,0,1,3,1095135716,NULL);
+INSERT INTO users VALUES (1,0,'','','admin','5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8','',1,1,0,0,0,0,0,NULL);
+INSERT INTO users VALUES (29,5,'','','user','5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8','',0,0,0,0,1,0,0,NULL);
+INSERT INTO users VALUES (25,2,'','','user','5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8','',0,0,1,0,1,3,1095135716,NULL);
 
 --
 -- Table structure for table `users_sequence`
@@ -1513,3 +1514,16 @@ CREATE TABLE users_sequence (
 
 INSERT INTO users_sequence VALUES (29);
 
+--
+-- Table structure for table `history`
+--
+
+DROP TABLE IF EXISTS history;
+CREATE TABLE history (
+  id int(11) NOT NULL auto_increment,
+  who varchar(25)  NOT NULL,
+  `when` timestamp  NOT NULL default CURRENT_TIMESTAMP,
+  description text  NOT NULL,
+  ip_address varchar(15)  NOT NULL,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM AUTO_INCREMENT=1 ;

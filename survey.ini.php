@@ -114,6 +114,15 @@ filter_limit = 3
 ; 1 = ON
 track_ip = 0
 
+; Password Changing Admins
+; 
+; A comma-separated list of usernames of admin
+; users who are allowed to change other users'
+; passwords. Any users not on this list will
+; be unable to change any passwords other than
+; their own.
+password_changers = admin
+
 ; Text Filter
 ;
 ; A comma separated list of words that

@@ -108,7 +108,7 @@ class UCCASS_Main
         { $this->error("Cannot find {$ini_file}"); return; }
 
         //Version of Survey System
-        $this->CONF['version'] = 'v1.8.1';
+        $this->CONF['version'] = 'v1.9.0';
 
         //Default path to Smarty
         if(!isset($this->CONF['smarty_path']) || $this->CONF['smarty_path'] == '')
@@ -526,6 +526,16 @@ class UCCASS_Main
                         break;
                         case AC_NONE:
                         default:
+                            if($this->anonLogin($sid) !== FALSE){
+                                if(!isset($_SESSION[$username])){
+                                    $this->log("Anonymous user: {$_REQUEST['username']} accessed the survey #$sid");
+                                }
+                            }
+                            else {
+                                $this->setMessage("Blank Username", "Must enter username", 2); 
+                                header("location: index.php");
+                                exit(0);
+                            }
                             $retval = TRUE;
                             $redirect_page = '';
                         break;
@@ -549,6 +559,7 @@ class UCCASS_Main
 
     function _checkUsernamePassword($sid,$priv,$numallowed=0,$numseconds=0)
     {
+
         $retval = FALSE;
 
         if(isset($_REQUEST['username']) && isset($_REQUEST['password']))
@@ -560,9 +571,8 @@ class UCCASS_Main
 
             $input['username'] = $this->SfStr->getSafeString($_REQUEST['username'],SAFE_STRING_DB);
             $input['password'] = $this->SfStr->getSafeString($_REQUEST['password'],SAFE_STRING_DB);
-            $query = "SELECT password, uid, name, email, admin_priv, create_priv, take_priv, results_priv, edit_priv FROM
-                      {$this->CONF['db_tbl_prefix']}users WHERE {$sid_check} AND username = {$input['username']}
-                      and password={$input['password']}";
+            $query = "SELECT password, salt, uid, name, email, admin_priv, create_priv, take_priv, results_priv, edit_priv, sid FROM
+                      {$this->CONF['db_tbl_prefix']}users WHERE {$sid_check} AND username = {$input['username']}";// and password={$input['password']}";
 
             $rs = $this->db->Execute($query);
             if($rs === FALSE)
@@ -572,7 +582,8 @@ class UCCASS_Main
             {
                 //Case sensitive compare done in PHP
                 //to be compatible across different databases
-                if(!strcmp($_REQUEST['password'],$r['password']))
+                $password = sha1($r['salt'] . $_REQUEST['password']);
+                if(!strcmp($password, $r['password']))
                 {
                     if($r['admin_priv'])
                     {
@@ -617,9 +628,16 @@ class UCCASS_Main
                         { $retval = TRUE; }
                     }
 
+
                     $_SESSION['priv'][$sid]['name'] = $r['name'];
                     $_SESSION['priv'][$sid]['email'] = $r['email'];
                     $_SESSION['priv'][$sid]['uid'] = $r['uid'];
+                    $_SESSION['priv']['uid'] = $r['uid'];
+
+                    if($r['sid'] == $sid || $r['admin_priv'] || $access == 0){
+                        //LOG
+                        $this->log("User logged in");
+                    }
                 }
             }
         }
@@ -681,6 +699,19 @@ class UCCASS_Main
         }
 
         return $retval;
+    }
+
+    // Generate a sixteen character salt for the password.
+    function generateSaltedPassword($password)
+    {
+        $salt = '';
+        for($i = 0; $i < 16; $i++) {
+            $rand = rand(97, 122);
+            $salt .= chr($rand);
+        }
+        $hashed = sha1($salt . $password);
+
+        return array($hashed, $salt);
     }
 
     function _checkCookie($sid,$priv,$numallowed=0,$numseconds=0)
@@ -834,6 +865,110 @@ class UCCASS_Main
 
     function isError()
     { return count($this->error); }
+
+    function log($message) {
+
+        $who = $this->SfStr->getSafeString($this->findCurrentUsersUsername(), SAFE_STRING_DB);
+        $ip = $this->SfStr->getSafeString($_SERVER['REMOTE_ADDR'],SAFE_STRING_DB);
+        $message = $this->SfStr->getSafeString($message,SAFE_STRING_DB);
+
+        $query = "INSERT INTO history (who, ip_address, description) 
+                  VALUES ($who, $ip, $message)";
+
+        $rs = $this->db->Execute($query);
+
+        if($rs === FALSE) { $this->error('Error Updating history: ' . $this->db->ErrorMsg()); }
+    }
+    
+    // Finds and returns the username of the current user logged in. If no user is found, it returns boolean false.
+    function findCurrentUsersUsername()
+    {
+        if(empty($_SESSION['priv']['uid']))
+        {
+            return 'Unknown';
+        }
+        
+        $query = "SELECT username FROM users WHERE uid = {$this->SfStr->getSafeString($_SESSION['priv']['uid'], SAFE_STRING_DB)}";
+        $rs = $this->db->Execute($query);
+        if($rs !== false)
+        {
+            $user = $rs->FetchRow($rs);
+            return $this->SfStr->getSafeString($user['username'], SAFE_STRING_TEXT);
+        }
+        
+        return 'Unknown';
+    }
+
+    function anonLogin($sid) {
+
+        $username = $_REQUEST['username'];
+        $password = $_REQUEST['password'];
+
+        if(empty($username)){
+            return false;
+        }
+
+        if($this->check_username($sid, $username) !== FALSE){
+            return false;
+        }
+
+
+        $_SESSION[$username] = true;
+
+        return $username;
+        
+    }
+    //Determine if a username is already in
+    //user for a given survey.
+    //Returns uid of match or false if username
+    //is not being used.
+    //$username is assumed to be passed unescaped for
+    //the database. Use third parameter to
+    //turn off database escaping within the function
+    function check_username($sid,$username,$escape=1)
+    {
+        $sid = (int)$sid;
+
+        if($escape)
+        { $username = $this->SfStr->getSafeString($username,SAFE_STRING_DB); }
+        else
+        { $username = $this->SfStr->getSafeString($username,SAFE_STRING_ESC); }
+
+        $query = "SELECT uid FROM {$this->CONF['db_tbl_prefix']}users WHERE sid=$sid AND username = {$username}";
+        $rs = $this->db->Execute($query);
+        if($rs === FALSE)
+        { $this->error('Error checking for existing username: ' . $this->db->ErrorMsg()); }
+
+        if($r = $rs->FetchRow($rs))
+        { $retval = $r['uid']; }
+        else
+        { $retval = FALSE; }
+
+        return $retval;
+    }
+
+    function check_username_no_sid($username, $escape = 1)
+    {
+        if($escape)
+        { $username = $this->SfStr->getSafeString($username,SAFE_STRING_DB); }
+        else
+        { $username = $this->SfStr->getSafeString($username,SAFE_STRING_ESC); }
+        
+        $query = "SELECT uid FROM {$this->CONF['db_tbl_prefix']}users WHERE username = {$username}";
+        $rs = $this->db->Execute($query);
+        if($rs === FALSE)
+        { $this->error('Error checking for existing username: ' . $this->db->ErrorMsg()); }
+        
+        if($r = $rs->FetchRow($rs))
+        {
+            return $r['uid'];
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }
 
 ?>

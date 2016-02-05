@@ -212,6 +212,10 @@ class UCCASS_NewSurvey extends UCCASS_Main
                    ($sid,{$s['survey_name']},{$s['activate']},{$s['template']},{$s['date_format']},{$s['created']})";
         if($rs1 = $this->query($sql[1],'Error creating survey'))
         {
+
+            //LOG
+            $this->log("Created Survey #$sid");
+
             //Make copy of "copy_sid". If "copy_sid" key is not
             //passed in $s array, then use Zero to copy a
             //predetermined set of answer types and values

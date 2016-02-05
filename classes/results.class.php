@@ -61,6 +61,8 @@ class UCCASS_Results extends UCCASS_Main
             $survey['sid'] = $sid;
             $survey['survey_text_mode'] = $r['survey_text_mode'];
 
+            $this->log("Viewed results of survey #$sid");
+
             //Set class variable of name to use outside of function
             $this->survey_name = $this->SfStr->getSafeString($r['name'],SAFE_STRING_TEXT);
         }

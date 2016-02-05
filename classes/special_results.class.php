@@ -54,6 +54,7 @@ class UCCASS_Special_Results extends UCCASS_Main
 
         $survey['sid'] = $sid;
 
+
         $query = "SELECT q.qid, q.question, s.name, s.user_text_mode, s.survey_text_mode, s.date_format
                   FROM {$this->CONF['db_tbl_prefix']}questions q, {$this->CONF['db_tbl_prefix']}surveys s
                   WHERE q.sid = $sid and s.sid = q.sid ORDER BY q.page, q.oid";
@@ -82,8 +83,8 @@ class UCCASS_Special_Results extends UCCASS_Main
         else
         { $_SESSION['filter'][$sid] = ''; }
 
-        $query = "SELECT GREATEST(rt.qid, r.qid) AS qid, GREATEST(rt.sequence, r.sequence) AS seq,
-                  GREATEST(rt.entered,r.entered) AS entered,
+        $query = "SELECT GREATEST(COALESCE(rt.qid,0), COALESCE(r.qid,0)) AS qid, GREATEST(COALESCE(rt.sequence,0), COALESCE(r.sequence,0)) AS seq,
+                  GREATEST(COALESCE(rt.entered,0),COALESCE(r.entered,0)) AS entered,
                   q.question, av.value, rt.answer FROM {$this->CONF['db_tbl_prefix']}questions q LEFT JOIN {$this->CONF['db_tbl_prefix']}results
                   r ON q.qid = r.qid LEFT JOIN {$this->CONF['db_tbl_prefix']}results_text rt ON q.qid = rt.qid LEFT JOIN
                   {$this->CONF['db_tbl_prefix']}answer_values av ON r.avid = av.avid WHERE q.sid = $sid {$_SESSION['filter'][$sid]}
@@ -97,6 +98,8 @@ class UCCASS_Special_Results extends UCCASS_Main
         $x = -1;
         while($r = $rs->FetchRow($rs))
         {
+
+
             if(!empty($r['qid']))
             {
                 if($seq != $r['seq'])
@@ -181,8 +184,8 @@ class UCCASS_Special_Results extends UCCASS_Main
         { $_SESSION['filter'][$sid] = ''; }
 
 
-        $query = "SELECT GREATEST(rt.qid, r.qid) AS qid, GREATEST(rt.sequence, r.sequence) AS seq,
-                  GREATEST(rt.entered, r.entered) AS entered,
+        $query = "SELECT GREATEST(COALESCE(rt.qid,0), COALESCE(r.qid,0)) AS qid, GREATEST(COALESCE(rt.sequence,0), COALESCE(r.sequence,0)) AS seq,
+                  GREATEST(COALESCE(rt.entered,0),COALESCE(r.entered,0)) AS entered,
                   q.question, av.value, av.numeric_value, rt.answer FROM {$this->CONF['db_tbl_prefix']}questions q LEFT JOIN {$this->CONF['db_tbl_prefix']}results
                   r ON q.qid = r.qid LEFT JOIN {$this->CONF['db_tbl_prefix']}results_text rt ON q.qid = rt.qid LEFT JOIN
                   {$this->CONF['db_tbl_prefix']}answer_values av ON r.avid = av.avid WHERE q.sid = $sid {$_SESSION['filter'][$sid]}

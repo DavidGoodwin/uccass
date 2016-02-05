@@ -1,3 +1,16 @@
+Version 1.9.0
+  
+  2008-01-18
+
+    Added hashing (sha1) of passwords with salting; upgrade routine
+    should convert as appropriate.
+
+    Added logging/history of actions to provide auditability     
+
+    Added 'uber-admin' behaviour, so normal admins cannot mess
+    with each other - see survey.ini.php for specifying who is 
+    to be the uber admin.
+
 Version 1.8.1
 
   2005-05-31

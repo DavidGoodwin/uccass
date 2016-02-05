@@ -41,7 +41,10 @@ class UCCASS_Survey extends UCCASS_Main
         if(isset($_REQUEST['action']) && $_REQUEST['action'] == 'logout')
         {
             if(isset($_SESSION['priv']))
-            { unset($_SESSION['priv']); }
+            { 
+                $this->log('User logged out');
+                unset($_SESSION['priv']); 
+            }
         }
 
         $survey = array();
@@ -175,6 +178,9 @@ class UCCASS_Survey extends UCCASS_Main
             if(!$this->set_template_paths($survey['template']))
             { $this->error("Unable to load template for survey. Expecting to find template in {$this->CONF['template_path']}"); return; }
         }
+
+        //LOG
+        $this->log("Viewed survey #$sid");
 
         $survey['total_pages'] = $r['max_page'];
         $now = time();
