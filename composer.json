@@ -1,0 +1,21 @@
+{
+    "name":             "palepurple/uccass",
+    "license":          "AGPL",
+    "authors": [
+        {
+            "name":         "David Goodwin",
+            "homepage":     "http://www.palepurple.co.uk"
+        }
+    ],
+    "cache-dir" : "var/composer",
+    "require" : {
+        "smarty/smarty" : "3.1.*",
+        "adodb/adodb-php": "5.20.*"
+    },
+    "require-dev" : {
+        "roave/security-advisories": "dev-master" 
+    },
+    "autoload": {
+        "classmap": [ ]
+    }
+}
