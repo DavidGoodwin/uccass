@@ -12,5 +12,4 @@ $output .= $survey->history();
 $output .= $survey->com_footer();
 
 echo $output;
-
 ?>

@@ -10,5 +10,3 @@ echo $survey->com_header();
 echo $survey->available_surveys();
 
 echo $survey->com_footer();
-
-?>

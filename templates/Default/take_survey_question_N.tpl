@@ -1,3 +1,3 @@
 <div class="whitebox">
-  {$q.required_text} {$q.question}
+    {$q.required_text} {$q.question}
 </div>

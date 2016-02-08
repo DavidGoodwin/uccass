@@ -12,5 +12,4 @@ $output .= $survey->admin();
 $output .= $survey->com_footer();
 
 echo $output;
-
 ?>

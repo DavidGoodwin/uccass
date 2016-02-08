@@ -12,5 +12,4 @@ $output .= $survey->survey_results(@$_REQUEST['sid']);
 $output .= $survey->com_footer();
 
 echo $output;
-
 ?>

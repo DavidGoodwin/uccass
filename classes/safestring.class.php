@@ -19,33 +19,33 @@
 // Affero General Public License for more details.
 //======================================================
 
-/*======================================================
+/* ======================================================
   Class Safe String
 
   This class prepares strings for display on a web page,
   display within form elements and insertion into a
   database based upon a chosen mode
-======================================================
+  ======================================================
   Class Methods
 
   bool SafeString(string dbtype)
-   - Constructor: Initializes variables
-   - Created ADOdb object with database type matching dbtype
+  - Constructor: Initializes variables
+  - Created ADOdb object with database type matching dbtype
   string getSafeString(string str[, string mode])
-   - Returns escaped str based upon mode
-   - Default mode is SAFE_STRING_TEXT
+  - Returns escaped str based upon mode
+  - Default mode is SAFE_STRING_TEXT
   string _safe_string_callback(array matches)
-   - Private method used by getSafeString
-     to produce allowed HTML in SAFE_STRING_LIMHTML mode
+  - Private method used by getSafeString
+  to produce allowed HTML in SAFE_STRING_LIMHTML mode
   void setHTML(string path)
-   - Sets full HTTP path to be used as a replacement
-     for {$html} tags in SAFE_STRING_LIMHTML and
-     SAFE_STRING_FULLHTML modes
+  - Sets full HTTP path to be used as a replacement
+  for {$html} tags in SAFE_STRING_LIMHTML and
+  SAFE_STRING_FULLHTML modes
   void setImagesHTML(string path)
-   - Sets full HTTP path to be used as a replacement
-     for {$images_html} tags in SAFE_STRING_LIMHTML
-     and SAFE_STRING_FULLHTML modes
-======================================================
+  - Sets full HTTP path to be used as a replacement
+  for {$images_html} tags in SAFE_STRING_LIMHTML
+  and SAFE_STRING_FULLHTML modes
+  ======================================================
   Mode Definitions:
 
   SAFE_STRING_TEXT: prepares text to be safely shown
@@ -84,23 +84,22 @@
   into the database using the ADOdb Quote-> method. The
   string is escaped regardless of the magic_quotes_gpc
   setting
-======================================================*/
+  ====================================================== */
 
-define('SAFE_STRING_TEXT',0);
-define('SAFE_STRING_LIMHTML',1);
-define('SAFE_STRING_FULLHTML',2);
-define('SAFE_STRING_DB',3);
-define('SAFE_STRING_ESC',4);
+define('SAFE_STRING_TEXT', 0);
+define('SAFE_STRING_LIMHTML', 1);
+define('SAFE_STRING_FULLHTML', 2);
+define('SAFE_STRING_DB', 3);
+define('SAFE_STRING_ESC', 4);
 
-class SafeString
-{
+class SafeString {
+
     var $html;
     var $images_html;
     var $dbtype;
     var $charset;
 
-    function SafeString($dbtype='mysql',$charset='ISO-8859-1')
-    {
+    function SafeString($dbtype = 'mysql', $charset = 'ISO-8859-1') {
         $this->html = '';
         $this->images_html = '';
         $this->charset = $charset;
@@ -109,54 +108,52 @@ class SafeString
         return TRUE;
     }
 
-    /**************
-    * Safe String *
-    **************/
+    /*     * ************
+     * Safe String *
+     * ************ */
+
     //Converts all special characters, including single
     //and double quotes, to HTML entities. Returned string
     //is safe to insert into databases or display to user
-    function getSafeString($str,$mode=SAFE_STRING_TEXT)
-    {
-        if(is_array($str))
-        {
-            foreach($str as $key => $value)
-            { $str[$key] = $this->getSafeString($value,$mode); }
-        }
-        else
-        {
-            switch($mode)
-            {
+    function getSafeString($str, $mode = SAFE_STRING_TEXT) {
+        if (is_array($str)) {
+            foreach ($str as $key => $value) {
+                $str[$key] = $this->getSafeString($value, $mode);
+            }
+        } else {
+            switch ($mode) {
                 case SAFE_STRING_DB:
-                    if(get_magic_quotes_gpc())
-                    { $str = stripslashes($str); }
+                    if (get_magic_quotes_gpc()) {
+                        $str = stripslashes($str);
+                    }
 
                     $str = $this->db->Quote($str);
-                break;
+                    break;
 
                 case SAFE_STRING_ESC:
                     $str = $this->db->Quote($str);
-                break;
+                    break;
 
                 case SAFE_STRING_LIMHTML:
-                    $str = str_replace(array('{$images_html}','{$html}'),array($this->images_html,$this->html),$str);
-                    $str = htmlentities($str,ENT_QUOTES,'utf-8');
-                    $str = preg_replace('#&lt;b&gt;(.*?)&lt;/b&gt;#i','<b>\1</b>',$str);
-                    $str = preg_replace('#&lt;i&gt;(.*?)&lt;/i&gt;#i','<i>\1</i>',$str);
-                    $str = preg_replace('#&lt;u&gt;(.*?)&lt;/u&gt;#i','<u>\1</u>',$str);
-                    $str = preg_replace_callback('#&lt;(div)(.*?)&gt;(.*?)&lt;/div&gt;#i',array(&$this,'_safe_string_callback'),$str);
-                    $str = preg_replace_callback('#&lt;(span)(.*?)&gt;(.*?)&lt;/span&gt;#i',array(&$this,'_safe_string_callback'),$str);
-                    $str = preg_replace_callback('#&lt;(a)(.*?)&gt;(.*?)&lt;/a&gt;#i',array(&$this,'_safe_string_callback'),$str);
-                    $str = preg_replace_callback('#&lt;(img)(.*?)&gt;#i',array(&$this,'_safe_string_callback'),$str);
-                break;
+                    $str = str_replace(array('{$images_html}', '{$html}'), array($this->images_html, $this->html), $str);
+                    $str = htmlentities($str, ENT_QUOTES, 'utf-8');
+                    $str = preg_replace('#&lt;b&gt;(.*?)&lt;/b&gt;#i', '<b>\1</b>', $str);
+                    $str = preg_replace('#&lt;i&gt;(.*?)&lt;/i&gt;#i', '<i>\1</i>', $str);
+                    $str = preg_replace('#&lt;u&gt;(.*?)&lt;/u&gt;#i', '<u>\1</u>', $str);
+                    $str = preg_replace_callback('#&lt;(div)(.*?)&gt;(.*?)&lt;/div&gt;#i', array(&$this, '_safe_string_callback'), $str);
+                    $str = preg_replace_callback('#&lt;(span)(.*?)&gt;(.*?)&lt;/span&gt;#i', array(&$this, '_safe_string_callback'), $str);
+                    $str = preg_replace_callback('#&lt;(a)(.*?)&gt;(.*?)&lt;/a&gt;#i', array(&$this, '_safe_string_callback'), $str);
+                    $str = preg_replace_callback('#&lt;(img)(.*?)&gt;#i', array(&$this, '_safe_string_callback'), $str);
+                    break;
 
                 case SAFE_STRING_FULLHTML:
-                    $str = str_replace(array('{$images_html}','{$html}'),array($this->images_html,$this->html),$str);
-                break;
+                    $str = str_replace(array('{$images_html}', '{$html}'), array($this->images_html, $this->html), $str);
+                    break;
 
                 case SAFE_STRING_TEXT:
                 default:
-                    $str = htmlentities($str,ENT_QUOTES,'utf-8');
-                break;
+                    $str = htmlentities($str, ENT_QUOTES, 'utf-8');
+                    break;
             }
         }
 
@@ -164,40 +161,40 @@ class SafeString
     }
 
     //Function to validate/sanitize limited HTML strings
-    function _safe_string_callback($matches)
-    {
+    function _safe_string_callback($matches) {
         $attrib = array('div' => 'class,style,id',
-                   'span' => 'class,style,id',
-                   'img' => 'border,id,class,style,src,height,width,alt',
-                   'a' => 'id,class,style,href,target');
+            'span' => 'class,style,id',
+            'img' => 'border,id,class,style,src,height,width,alt',
+            'a' => 'id,class,style,href,target');
 
-        if(isset($matches[2]) && !empty($matches[2]))
-        {
-            $allowed_attrib = str_replace(array(',',' '),array('|',''),$attrib[$matches[1]]);
-            $matches[2] = str_replace('=','&#61;',$matches[2]);
+        if (isset($matches[2]) && !empty($matches[2])) {
+            $allowed_attrib = str_replace(array(',', ' '), array('|', ''), $attrib[$matches[1]]);
+            $matches[2] = str_replace('=', '&#61;', $matches[2]);
             $pattern = "/({$allowed_attrib})&#61;(&quot;|&#039;)(.*)(&quot;|&#039;)/iU";
-            $matches[2] = preg_replace($pattern,'\1="\3"',$matches[2]);
+            $matches[2] = preg_replace($pattern, '\1="\3"', $matches[2]);
         }
 
-        switch($matches[1])
-        {
+        switch ($matches[1]) {
             case 'img':
                 $retval = "<{$matches[1]}{$matches[2]}>";
-            break;
+                break;
 
             default:
                 $retval = "<{$matches[1]}{$matches[2]}>{$matches[3]}</{$matches[1]}>";
-            break;
+                break;
         }
 
         return $retval;
     }
 
-    function setHTML($str)
-    { $this->html = $str; }
+    function setHTML($str) {
+        $this->html = $str;
+    }
 
-    function setImagesHTML($str)
-    { $this->images_html = $str; }
+    function setImagesHTML($str) {
+        $this->images_html = $str;
+    }
+
 }
 
 ?>

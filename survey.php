@@ -12,5 +12,4 @@ $header = $survey->com_header("{$survey->CONF['site_name']} : {$survey->survey_n
 echo $header;
 echo $body;
 echo $survey->com_footer();
-
 ?>
