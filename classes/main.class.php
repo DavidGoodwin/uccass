@@ -89,7 +89,7 @@ define('MULTI_ANSWER_SEPERATOR', ', ');
 
 class UCCASS_Main {
 
-    function UCCASS_Main() {
+    function __construct() {
         $this->load_configuration();
     }
 

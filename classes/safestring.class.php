@@ -99,7 +99,7 @@ class SafeString {
     var $dbtype;
     var $charset;
 
-    function SafeString($dbtype = 'mysql', $charset = 'ISO-8859-1') {
+    function __construct($dbtype = 'mysql', $charset = 'ISO-8859-1') {
         $this->html = '';
         $this->images_html = '';
         $this->charset = $charset;

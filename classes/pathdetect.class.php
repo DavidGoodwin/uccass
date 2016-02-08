@@ -24,7 +24,7 @@ class UCCASS_PathDetect {
     var $path;
     var $html;
 
-    function UCCASS_PathDetect() {
+    function __construct() {
         //Install path
         if (isset($_SERVER['PATH_TRANSLATED']) && !empty($_SERVER['PATH_TRANSLATED'])) {
             $this->CONF['path'] = dirname($_SERVER['PATH_TRANSLATED']);

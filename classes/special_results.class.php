@@ -21,7 +21,7 @@
 
 class UCCASS_Special_Results extends UCCASS_Main {
 
-    function UCCASS_Special_Results() {
+    function __construct() {
         $this->load_configuration();
 
         //Increase time limit of script to 2 minutes to ensure

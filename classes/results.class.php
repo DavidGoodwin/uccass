@@ -21,7 +21,7 @@
 
 class UCCASS_Results extends UCCASS_Main {
 
-    function UCCASS_Results() {
+    function __construct() {
         $this->load_configuration();
     }
 

@@ -21,7 +21,7 @@
 
 class UCCASS_NewSurvey extends UCCASS_Main {
 
-    function UCCASS_NewSurvey() {
+    function __construct() {
         $this->load_configuration();
     }
 

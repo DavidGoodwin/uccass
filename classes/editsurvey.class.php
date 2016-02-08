@@ -57,7 +57,7 @@ define('WORDCODE_NUMWORDS', 2);
 class UCCASS_EditSurvey extends UCCASS_Main {
 
     //Load configuration and initialize data variable
-    function UCCASS_EditSurvey() {
+    function __construct() {
         $this->load_configuration();
         $this->data = array();
     }

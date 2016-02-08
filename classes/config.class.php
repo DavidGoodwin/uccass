@@ -27,13 +27,12 @@ class UCCASS_Config {
      * CONSTRUCTOR *
      * ************ */
 
-    function UCCASS_Config($file = '') {
+    function __construct($file = '') {
         // If $file was passed, load it
         if ($file != '') {
             $this->load_file($file);
         }
 
-        return;
     }
 
     /*     * **********

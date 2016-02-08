@@ -21,13 +21,13 @@
 
 class UCCASS_SurveyAdmin extends UCCASS_Main {
 
-    function UCCASS_SurveyAdmin() {
+    function __construct() {
         $this->load_configuration();
     }
 
-    /*     * ***********
-     * ADMIN PAGE *
-     * *********** */
+    /*
+     * ADMIN PAGE 
+     */
 
     function admin() {
         $data = array();
@@ -110,10 +110,9 @@ class UCCASS_SurveyAdmin extends UCCASS_Main {
         return $retval;
     }
 
-    /*     * *******************
+    /*
      * UPDATE ADMIN USERS *
-     * ******************* */
-
+     */
     function update_admin_users() {
         $retval = FALSE;
         $errmsg = array();

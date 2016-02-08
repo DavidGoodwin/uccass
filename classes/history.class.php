@@ -23,7 +23,7 @@ class UCCASS_History extends UCCASS_Main {
 
     var $resultsPerPage = 10;
 
-    function UCCASS_History() {
+    function __construct() {
         $this->load_configuration();
     }
 

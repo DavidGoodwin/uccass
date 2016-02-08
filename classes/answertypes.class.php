@@ -21,7 +21,7 @@
 
 class UCCASS_AnswerTypes extends UCCASS_Main {
 
-    function UCCASS_AnswerTypes() {
+    function __construct() {
         $this->load_configuration();
     }
 
