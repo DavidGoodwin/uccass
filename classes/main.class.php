@@ -89,6 +89,21 @@ define('MULTI_ANSWER_SEPERATOR', ', ');
 
 class UCCASS_Main {
 
+    /**
+     * @var array Our configuration
+     */
+    protected $CONF = array();
+
+    /**
+     * @var ADODBConnection
+     */
+    protected $db = null;
+
+    /**
+     * @var SmartyBC
+     */
+    protected $smarty = null;
+
     function __construct() {
         $this->load_configuration();
     }
@@ -98,72 +113,47 @@ class UCCASS_Main {
      * ******************* */
 
     function load_configuration() {
-        //Ensure install.php file has be removed
-        if (!isset($_REQUEST['config_submit']) && file_exists('install.php')) {
-            $this->error("WARNING: install.php file still exists. Survey System will not run with this file present. Click <a href=\"install.php\">here</a> to run the installation program or move/rename the install.php file so that the installation program can not be re-run.");
-            return;
-        }
 
-        $ini_file = 'survey.ini.php';
-        //Load values from .ini. file
-        if (file_exists($ini_file)) {
-            $this->CONF = @parse_ini_file($ini_file);
-            if (count($this->CONF) == 0) {
-                $this->error("Error parsing {$ini_file} file");
-                return;
+
+        // allow there to be a local config file (as it were).
+        $ini_files = ['survey.ini.php', 'survey.ini.local.php'];
+        foreach ($ini_files as $file) {
+            $ini_file = dirname(__FILE__) . '/../' . $file;
+            //Load values from .ini. file
+            if (file_exists($ini_file)) {
+                $config = parse_ini_file($ini_file);
+                foreach ($config as $key => $value) {
+                    $this->CONF[$key] = $value;
+                }
             }
-        } else {
-            $this->error("Cannot find {$ini_file}");
-            return;
         }
-
         //Version of Survey System
-        $this->CONF['version'] = 'v1.9.0';
+        $this->CONF['version'] = 'v1.9.1';
+        $this->CONF['path'] = dirname(__FILE__) . '/../';
 
-        //Default path to Smarty
-        if (!isset($this->CONF['smarty_path']) || $this->CONF['smarty_path'] == '') {
-            $this->CONF['smarty_path'] = $this->CONF['path'] . '/smarty';
+        if (empty($this->CONF)) {
+            die("No configuration found; Check survey.ini.php and/or survey.ini.local.php");
         }
 
-        //Default path to ADOdb
-        if (!isset($this->CONF['adodb_path']) || $this->CONF['adodb_path'] == '') {
-            $this->CONF['adodb_path'] = $this->CONF['path'] . '/ADOdb';
-        }
-
-        //Load ADOdb files
-        $adodb_file = $this->CONF['adodb_path'] . '/adodb.inc.php';
-        if (file_exists($adodb_file)) {
-            require($this->CONF['adodb_path'] . '/adodb.inc.php');
-        } else {
-            $this->error("Cannot find file: $adodb_file");
-            return;
-        }
-
-        //Load Smarty Files
-        $smarty_file = $this->CONF['smarty_path'] . '/Smarty.class.php';
-        if (file_exists($smarty_file)) {
-            require($this->CONF['smarty_path'] . '/Smarty.class.php');
-        } else {
-            $this->error("Cannot find file: $smarty_file");
+        //Ensure install.php file has be removed
+        if (!isset($this->CONF['skip_install_warning']) && !isset($_REQUEST['config_submit']) && file_exists('install.php')) {
+            $this->error("WARNING: install.php file still exists. Survey System will not run with this file present. Click <a href=\"install.php\">here</a> to run the installation program or move/rename the install.php file so that the installation program can not be re-run.");
             return;
         }
 
         //Create Smarty object and set
         //paths within object
-        $this->smarty = new Smarty;
-        $this->smarty->template_dir = $this->CONF['path'] . '/templates';                    // name of directory for templates
-        $this->smarty->compile_dir = $this->CONF['smarty_path'] . '/templates_c';     // name of directory for compiled templates
-        $this->smarty->config_dir = $this->CONF['smarty_path'] . '/configs';         // directory where config files are located
-        $this->smarty->plugins_dir = array($this->CONF['smarty_path'] . '/plugins');  // plugin directories
+        $this->smarty = new SmartyBC();
+        $this->smarty->template_dir = dirname(__FILE__) . '/../templates/';
+        $this->smarty->compile_dir = dirname(__FILE__) . '/../templates_c/';     // name of directory for compiled templates
+
+        if (!is_writeable($this->smarty->compile_dir)) {
+            $this->smarty->compile_dir = sys_get_temp_dir();
+        }
+
 
         if (!$this->set_template_paths($this->CONF['default_template'])) {
             $this->error("WARNING: Cannot find default template path. Expecting: {$this->CONF['template_path']}");
-            return;
-        }
-
-        //Ensure templates_c directory is writable
-        if (!is_writable($this->smarty->compile_dir)) {
-            $this->error("WARNING: Compiled template directory is not writable ({$this->smarty->compile_dir}). Please refer to the installation document for instructions.");
             return;
         }
 
@@ -218,10 +208,12 @@ class UCCASS_Main {
         return;
     }
 
-    /*     * *******************
-     * SET TEMPLATE PATHS *
-     * ******************* */
-
+    /**
+     * change which set of templates we're using (i.e which directory within templates/.
+     * 
+     * @param string $template
+     * @return boolean
+     */
     function set_template_paths($template) {
         $this->template = $template;
 
@@ -300,11 +292,11 @@ class UCCASS_Main {
         if (!empty($_SESSION['message']['title']) && !empty($_SESSION['message']['text'])) {
             switch ($_SESSION['message']['type']) {
                 case MSGTYPE_ERROR:
-                    $this->smarty->assign_by_ref('error', $_SESSION['message']['text']);
+                    $this->smarty->assign('error', $_SESSION['message']['text']);
                     $retval = $this->smarty->fetch($this->template . '/error.tpl');
                     break;
                 default:
-                    $this->smarty->assign_by_ref('message', $_SESSION['message']);
+                    $this->smarty->assign('message', $_SESSION['message']);
                     $retval = $this->smarty->fetch($this->template . '/message.tpl');
                     break;
             }
