@@ -12,9 +12,9 @@
     <tr>
         <td align="center">
             [ <a href="{$conf.html}/index.php">Main</a>
-            {section name="admin_link" show=$conf.show_admin_link}
+            {if $conf.show_admin_link } 
                 &nbsp;|&nbsp;<a href="{$conf.html}/admin.php">Admin</a>
-            {/section} ]
+            {/if} ]
         </td>
     </tr>
 </table>
