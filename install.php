@@ -6,13 +6,13 @@ $error = FALSE;
 include('classes/main.class.php');
 include('classes/config.class.php');
 
-$ini_file = 'survey.ini.php';
+$ini_file = 'survey.ini.local.php';
 
 $c = new UCCASS_Config($ini_file);
 
 if (count($_POST) > 0) {
     if ($c->process_config($ini_file)) {
-        include('classes/survey.class.php');
+
 
         $survey = new UCCASS_Main();
 

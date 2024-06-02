@@ -27,13 +27,14 @@
             </div>
         </td>
     </tr>
+{if !empty($survey.all_surveys.sid)} 
     <tr>
         <td class="whitebox">Edit Surveys</td>
     </tr>
     <tr>
         <td>
             <form class="indented_cell" method="get" action="{$conf.html}/edit_survey.php">
-                Survey:&nbsp;
+                Survey:&nbsp; 
                 <select name="sid" size="1">
                     {section name="as" loop=$survey.all_surveys.sid}
                         <option value="{$survey.all_surveys.sid[as]}">{$survey.all_surveys.name[as]}</option>
@@ -43,6 +44,7 @@
             </form>
         </td>
     </tr>
+{/if}
     <tr>
         <td style="text-align:center">
             <br />

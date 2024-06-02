@@ -99,6 +99,11 @@ class SafeString {
     var $dbtype;
     var $charset;
 
+    /**
+     * @var ADOConnection|false
+     */
+    private $db;
+
     function __construct($dbtype = 'mysql', $charset = 'ISO-8859-1') {
         $this->html = '';
         $this->images_html = '';
@@ -123,9 +128,7 @@ class SafeString {
         } else {
             switch ($mode) {
                 case SAFE_STRING_DB:
-                    if (get_magic_quotes_gpc()) {
-                        $str = stripslashes($str);
-                    }
+
 
                     $str = $this->db->Quote($str);
                     break;

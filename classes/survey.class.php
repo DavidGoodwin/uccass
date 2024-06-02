@@ -21,24 +21,13 @@
 
 class UCCASS_Survey extends UCCASS_Main {
 
-    //Default variables
-    var $smarty;
-    var $db;
-    var $survey_name = '';
-    var $CONF;
 
-    /*     * ************
-     * CONSTRUCTOR *
-     * ************ */
+    private $survey_name = '';
 
-    function __construct() {
-        $this->load_configuration();
-    }
-
-    /*     * ******************
-     * AVAILABLE SURVEYS *
-     * ****************** */
-
+    /**
+     * Get available surveys (html)
+     * @return string $html 
+     */
     function available_surveys() {
         if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'logout') {
             if (isset($_SESSION['priv'])) {
@@ -84,10 +73,10 @@ class UCCASS_Survey extends UCCASS_Main {
             $show['create_survey'] = FALSE;
         }
 
-        $this->smarty->assign_by_ref('show', $show);
+        $this->smarty->assign('show', $show);
 
         if (isset($survey) && count($survey) > 0) {
-            $this->smarty->assign_by_ref("survey", $survey);
+            $this->smarty->assign("survey", $survey);
         }
 
         $retval = $this->smarty->fetch($this->template . '/available_surveys.tpl');
@@ -95,11 +84,11 @@ class UCCASS_Survey extends UCCASS_Main {
         return $retval;
     }
 
-    /*     * ************
-     * TAKE SURVEY *
-     * ************ */
-
-    function take_survey($sid) {
+    /**
+     * Take a specific survey.
+     * @param int $sid - survey id
+     */
+    public function take_survey($sid) {
         $sid = (int) $sid;
 
         $check = $this->_CheckAccess($sid, TAKE_PRIV, "survey.php?sid=$sid");
@@ -573,7 +562,7 @@ class UCCASS_Survey extends UCCASS_Main {
                             $no_counts++;
                         }
 
-                        $this->smarty->assign_by_ref('q', $q);
+                        $this->smarty->assignByRef('q', $q);
 
 
                         if ($end_matrix) {
@@ -815,5 +804,3 @@ class UCCASS_Survey extends UCCASS_Main {
     }
 
 }
-
-?>

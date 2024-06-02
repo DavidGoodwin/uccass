@@ -7,11 +7,11 @@
 </table>
 
 <table width="70%" align="center" class="bordered_table">
-    {section name="message" show=$data.message}
+    {if $data.message}
         <tr>
             <td class="error">{$data.message}</td>
         </tr>
-    {/section}
+    {/if}
     <tr>
         <td align="center">
             <form method="POST" action="{$conf.html}/{$data.page}" name="login_form">

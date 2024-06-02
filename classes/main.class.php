@@ -29,10 +29,6 @@ require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 //Start Session
 session_start();
 
-//Turn off runtime escaping of quotes
-if (function_exists('set_magic_quotes_runtime')) {
-    set_magic_quotes_runtime(0);
-}
 //Set Error Reporting Level to not
 //show notices or warnings
 error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
@@ -90,21 +86,35 @@ define('MULTI_ANSWER_SEPERATOR', ', ');
 class UCCASS_Main {
 
     /**
+     * @var string - path to smarty template file?
+     */
+    protected $template;
+
+    public $error_occurred;
+
+    /**
      * @var array Our configuration
      */
-    protected $CONF = array();
+    public $CONF = array();
 
     /**
-     * @var ADODBConnection
+     * @var ADODB
      */
-    protected $db = null;
+    public $db = null;
 
     /**
-     * @var SmartyBC
+     * @var Smarty
      */
     protected $smarty = null;
 
-    function __construct() {
+
+
+    /**
+     * @var SafeString
+     */
+    protected $SfStr;
+
+    public function __construct() {
         $this->load_configuration();
     }
 
@@ -143,7 +153,7 @@ class UCCASS_Main {
 
         //Create Smarty object and set
         //paths within object
-        $this->smarty = new SmartyBC();
+        $this->smarty = new Smarty();
         $this->smarty->template_dir = dirname(__FILE__) . '/../templates/';
         $this->smarty->compile_dir = dirname(__FILE__) . '/../templates_c/';     // name of directory for compiled templates
 
@@ -203,7 +213,7 @@ class UCCASS_Main {
         $this->SfStr->setImagesHTML($this->CONF['images_html']);
 
         //Assign configuration values to template
-        $this->smarty->assign_by_ref('conf', $this->CONF);
+        $this->smarty->assignByRef('conf', $this->CONF);
 
         return;
     }
@@ -275,7 +285,7 @@ class UCCASS_Main {
 
     function setMessageRedirect($page) {
         if (strpos($page, $this->CONF['html']) === FALSE) {
-            if ($page{0} != '/') {
+            if ($page[0] != '/') {
                 $page = '/' . $page;
             }
             $page = $this->CONF['html'] . $page;
@@ -343,7 +353,7 @@ class UCCASS_Main {
             $values['title'] = $this->SfStr->getSafeString($title, SAFE_STRING_TEXT);
         }
 
-        $this->smarty->assign_by_ref('values', $values);
+        $this->smarty->assignByRef('values', $values);
         return $this->smarty->fetch($this->template . '/main_header.tpl') . $this->showMessage();
     }
 
@@ -443,7 +453,7 @@ class UCCASS_Main {
             }
         }
 
-        $this->smarty->assign_by_ref("answers", $answers);
+        $this->smarty->assignByRef("answers", $answers);
 
         $retval = $this->smarty->fetch($this->template . '/display_answers.tpl');
 
@@ -804,7 +814,7 @@ class UCCASS_Main {
                 $data['hiddenval'][] = $val;
             }
         }
-        $this->smarty->assign_by_ref('data', $data);
+        $this->smarty->assignByRef('data', $data);
         return $this->smarty->Fetch($this->template . '/login.tpl');
     }
 
@@ -822,7 +832,7 @@ class UCCASS_Main {
             }
         }
 
-        $this->smarty->assign_by_ref('data', $data);
+        $this->smarty->assignByRef('data', $data);
         return $this->smarty->Fetch($this->template . '/invite_code.tpl');
     }
 

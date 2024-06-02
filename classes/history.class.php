@@ -78,7 +78,7 @@ class UCCASS_History extends UCCASS_Main {
             $data[$history_id]['description'] = $this->SfStr->getSafeString($r['description'], SAFE_STRING_TEXT);
             $data[$history_id]['ip_address'] = $this->SfStr->getSafeString($r['ip_address'], SAFE_STRING_TEXT);
         }
-        $this->smarty->assign_by_ref('data', $data);
+        $this->smarty->assignByRef('data', $data);
 
         // Find a list of all users.
         $query = "SELECT DISTINCT username FROM users ORDER BY username ASC";
@@ -91,7 +91,7 @@ class UCCASS_History extends UCCASS_Main {
         while ($r = $rs->FetchRow()) {
             $users[] = $this->SfStr->getSafeString($r['username'], SAFE_STRING_TEXT);
         }
-        $this->smarty->assign_by_ref('users', $users);
+        $this->smarty->assignByRef('users', $users);
 
         return $this->smarty->Fetch($this->template . '/history.tpl');
     }
@@ -140,7 +140,7 @@ class UCCASS_History extends UCCASS_Main {
         }
 
         $results_start = ceil($page * $this->resultsPerPage);
-        $this->smarty->assign_by_ref('controls', $controls);
+        $this->smarty->assignByRef('controls', $controls);
         return $query . " LIMIT $results_start,{$this->resultsPerPage}";
     }
 
@@ -200,7 +200,7 @@ class UCCASS_History extends UCCASS_Main {
                 $query .= ' AND ';
             }
             $query .= "history.when >= {$this->SfStr->getSafeString($from_time, SAFE_STRING_DB)}";
-            $this->smarty->assign_by_ref('filter_from', $from);
+            $this->smarty->assignByRef('filter_from', $from);
         }
 
         // Show results from before "to".
@@ -219,7 +219,7 @@ class UCCASS_History extends UCCASS_Main {
                 $query .= ' AND ';
             }
             $query .= "history.when <= {$this->SfStr->getSafeString($to_time, SAFE_STRING_DB)}";
-            $this->smarty->assign_by_ref('filter_to', $to);
+            $this->smarty->assignByRef('filter_to', $to);
         }
 
         // Show results for user "username".
@@ -238,7 +238,7 @@ class UCCASS_History extends UCCASS_Main {
                     $query .= ' AND ';
                 }
                 $query .= "history.who = {$this->SfStr->getSafeString($username, SAFE_STRING_DB)}";
-                $this->smarty->assign_by_ref('filter_user', $username);
+                $this->smarty->assignByRef('filter_user', $username);
             }
         }
 

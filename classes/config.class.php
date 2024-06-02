@@ -23,10 +23,20 @@ class UCCASS_Config {
 
     var $sequences;
 
-    /*     * ************
-     * CONSTRUCTOR *
-     * ************ */
 
+    /**
+     * @var string
+     */
+    private $form;
+
+    /**
+     * @var array
+     */
+    protected $CONF;
+
+    /**
+     * @param string $file config file to use
+     */
     function __construct($file = '') {
         // If $file was passed, load it
         if ($file != '') {
@@ -34,10 +44,6 @@ class UCCASS_Config {
         }
 
     }
-
-    /*     * **********
-     * LOAD FILE *
-     * ********** */
 
     function load_file($file) {
         // Check that file exists
@@ -111,9 +117,6 @@ class UCCASS_Config {
 
             if ($fp = fopen($file, "w")) {
                 foreach ($_POST as $key => $value) {
-                    if (get_magic_quotes_gpc()) {
-                        $value = stripslashes($value);
-                    }
 
                     if (preg_match("/[^a-z0-9]/i", $value)) {
                         $value = '"' . $value . '"';
@@ -161,7 +164,7 @@ class UCCASS_Config {
         if (!empty($sql_file) && file_exists($sql_file)) {
             $file = file($sql_file);
             foreach ($file as $line) {
-                if (strlen($line) > 0 && $line{0} != '#' && substr($line, 0, 2) != '--') {
+                if (strlen($line) > 0 && $line[0] != '#' && substr($line, 0, 2) != '--') {
                     $query .= trim($line);
                     if (substr($query, -1) == ";") {
                         $query = preg_replace('/^(ALTER|CREATE|UPDATE) (TEMPORARY )?(TABLE )?(`?)/', '\\0' . $survey->CONF['db_tbl_prefix'], $query);
@@ -248,5 +251,3 @@ class UCCASS_Config {
     }
 
 }
-
-?>

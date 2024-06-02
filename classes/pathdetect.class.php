@@ -23,6 +23,7 @@ class UCCASS_PathDetect {
 
     var $path;
     var $html;
+    var $CONF = [];
 
     function __construct() {
         //Install path

@@ -36,7 +36,7 @@ class UCCASS_NewSurvey extends UCCASS_Main {
                 $data['username'] = $this->SfStr->getSafeString($_REQUEST['username'], 1);
             }
             $data['page'] = 'new_survey.php';
-            $this->smarty->assign_by_ref('data', $data);
+            $this->smarty->assignByRef('data', $data);
             return $this->smarty->Fetch($this->template . '/login.tpl');
         }
 

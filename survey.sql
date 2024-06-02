@@ -12,12 +12,12 @@ DROP TABLE IF EXISTS answer_types;
 CREATE TABLE answer_types (
   aid int(11) NOT NULL default '0',
   name varchar(50) NOT NULL default '',
-  type varchar(5) NOT NULL default 'T',
+  `type` varchar(5) NOT NULL default 'T',
   label varchar(255) NOT NULL default '',
   sid int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (aid)
 ) CHARACTER SET latin1
-TYPE=MyISAM;
+Engine=InnoDB;
 
 --
 -- Dumping data for table `answer_types`
@@ -102,7 +102,7 @@ DROP TABLE IF EXISTS answer_types_sequence;
 CREATE TABLE answer_types_sequence (
   id int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `answer_types_sequence`
@@ -124,7 +124,7 @@ CREATE TABLE answer_values (
   PRIMARY KEY  (avid),
   KEY aid (aid)
 ) CHARACTER SET latin1
-TYPE=MyISAM;
+Engine=InnoDB;
 
 --
 -- Dumping data for table `answer_values`
@@ -420,7 +420,7 @@ DROP TABLE IF EXISTS answer_values_sequence;
 CREATE TABLE answer_values_sequence (
   id int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `answer_values_sequence`
@@ -438,7 +438,8 @@ CREATE TABLE completed_surveys (
   sid int(11) NOT NULL default '0',
   completed int(11) NOT NULL default '0',
   KEY uid (uid)
-) TYPE=MyISAM;
+)  Engine=InnoDB;
+
 
 --
 -- Dumping data for table `completed_surveys`
@@ -462,7 +463,7 @@ CREATE TABLE dependencies (
   PRIMARY KEY  (dep_id),
   UNIQUE KEY sid (sid,qid,dep_qid,dep_aid)
 ) CHARACTER SET latin1
-TYPE=MyISAM;
+Engine=InnoDB;
 
 --
 -- Dumping data for table `dependencies`
@@ -488,7 +489,7 @@ DROP TABLE IF EXISTS dependencies_sequence;
 CREATE TABLE dependencies_sequence (
   id int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `dependencies_sequence`
@@ -507,7 +508,7 @@ CREATE TABLE ip_track (
   completed int(11) NOT NULL default '0',
   KEY sid (sid)
 ) CHARACTER SET latin1
-TYPE=MyISAM;
+Engine=InnoDB;
 
 --
 -- Dumping data for table `ip_track`
@@ -533,7 +534,7 @@ CREATE TABLE questions (
   KEY aid (aid),
   KEY sid (sid)
 ) CHARACTER SET latin1
-TYPE=MyISAM;
+Engine=InnoDB;
 
 --
 -- Dumping data for table `questions`
@@ -582,9 +583,9 @@ INSERT INTO questions VALUES (78,'What is your racial / ethnic background?',166,
 INSERT INTO questions VALUES (79,'Please list three things that are going very well in this unit.',167,5,3,3,0,33,'Vertical');
 INSERT INTO questions VALUES (80,'Please list three things that most need improvement in this unit?',167,5,3,3,0,34,'Vertical');
 INSERT INTO questions VALUES (94,'Thank you for taking the survey.',24,2,7,1,0,17,'Vertical');
-INSERT INTO questions VALUES (95,'Welcome to the example survey. Please click \"Next Page\" below to begin.',24,2,1,1,0,2,'Vertical');
-INSERT INTO questions VALUES (96,'YOUR OPEN, HONEST RESPONSES ARE NEEDED\r\nTO PROVIDE INFORMATION FOR DECISIONS\r\nAFFECTING YOUR UNIT.\r\n\r\n       • The survey is anonymous.\r\n       • Only group statistics will be reported.\r\n\r\nTHANK YOU FOR YOUR TIME AND COOPERATION!',169,5,1,1,0,1,'Vertical');
-INSERT INTO questions VALUES (97,'THANK YOU FOR COMPLETING THIS SURVEY.\r\n\r\nPlease click on \"Finish\" below to save your answers.',169,5,3,1,0,68,'Vertical');
+INSERT INTO questions VALUES (95,'Welcome to the example survey. Please click "Next Page" below to begin.',24,2,1,1,0,2,'Vertical');
+INSERT INTO questions VALUES (96,'YOUR OPEN, HONEST RESPONSES ARE NEEDED\r\nTO PROVIDE INFORMATION FOR DECISIONS\r\nAFFECTING YOUR UNIT. THANK YOU FOR YOUR TIME AND COOPERATION!',169,5,1,1,0,1,'Vertical');
+INSERT INTO questions VALUES (97,'THANK YOU FOR COMPLETING THIS SURVEY. Please click on "Finish" below to save your answers.',169,5,3,1,0,68,'Vertical');
 
 --
 -- Table structure for table `questions_sequence`
@@ -594,7 +595,7 @@ DROP TABLE IF EXISTS questions_sequence;
 CREATE TABLE questions_sequence (
   id int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `questions_sequence`
@@ -619,7 +620,7 @@ CREATE TABLE results (
   KEY qid (qid),
   KEY sequence (sequence),
   KEY avid (avid)
-) TYPE=MyISAM;
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `results`
@@ -1193,7 +1194,7 @@ DROP TABLE IF EXISTS results_sequence;
 CREATE TABLE results_sequence (
   id int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `results_sequence`
@@ -1219,7 +1220,7 @@ CREATE TABLE results_text (
   KEY sequence (sequence),
   FULLTEXT KEY answer (answer)
 ) CHARACTER SET latin1
-TYPE=MyISAM;
+Engine=InnoDB;
 
 --
 -- Dumping data for table `results_text`
@@ -1301,9 +1302,9 @@ INSERT INTO results_text VALUES (174,2,38,'no, no other comments at this time. '
 
 DROP TABLE IF EXISTS results_text_sequence;
 CREATE TABLE results_text_sequence (
-  id int(11) NOT NULL default '0',
+  id int(11) NOT NULL default 0,
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `results_text_sequence`
@@ -1317,9 +1318,9 @@ INSERT INTO results_text_sequence VALUES (177);
 
 DROP TABLE IF EXISTS sequence;
 CREATE TABLE sequence (
-  id int(11) NOT NULL default '0',
+  id int(11) NOT NULL default 0,
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `sequence`
@@ -1354,7 +1355,7 @@ CREATE TABLE surveys (
   survey_limit_seconds int(11) NOT NULL default '0',
   PRIMARY KEY  (sid)
 ) CHARACTER SET latin1
-TYPE=MyISAM;
+Engine=InnoDB;
 
 --
 -- Dumping data for table `surveys`
@@ -1371,7 +1372,7 @@ DROP TABLE IF EXISTS surveys_sequence;
 CREATE TABLE surveys_sequence (
   id int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `surveys_sequence`
@@ -1391,7 +1392,7 @@ CREATE TABLE time_limit (
   quitflag int(11) NOT NULL default '0',
   PRIMARY KEY  (sequence),
   KEY sid (sid)
-) TYPE=MyISAM;
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `time_limit`
@@ -1488,7 +1489,7 @@ CREATE TABLE users (
   invite_code varchar(32) default NULL,
   PRIMARY KEY  (uid,sid)
 ) CHARACTER SET latin1
-TYPE=MyISAM;
+Engine=InnoDB;
 
 
 --
@@ -1505,8 +1506,8 @@ INSERT INTO users VALUES (25,2,'','','user','5baa61e4c9b93f3f0682250b6cf8331b7ee
 
 DROP TABLE IF EXISTS users_sequence;
 CREATE TABLE users_sequence (
-  id int(11) NOT NULL default '0'
-) TYPE=MyISAM;
+  id int(11) NOT NULL default 0
+) Engine=InnoDB;
 
 --
 -- Dumping data for table `users_sequence`
@@ -1526,4 +1527,4 @@ CREATE TABLE history (
   description text  NOT NULL,
   ip_address varchar(15)  NOT NULL,
   PRIMARY KEY  (id)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) Engine=InnoDB AUTO_INCREMENT=1 ;

@@ -13,8 +13,9 @@
         <a href="{$conf.html}/survey.php?sid={$data.sid}&preview_survey=1" target="_blank">Preview Survey</a>
         &nbsp;|&nbsp;
         <a href="{$conf.html}/index.php">Return to Main</a>
-        {section name="admin_link" show=$$conf.show_admin_link}
-            &nbsp;|&nbsp;<a href="{$conf.html}/admin.php">Admin</a>
-        {/section} ]
+        {if $conf.show_admin_link}
+            &nbsp;|&nbsp;
+            <a href="{$conf.html}/admin.php">Admin</a>
+        {/if} ]
     </td>
 </tr>

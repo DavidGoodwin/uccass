@@ -77,7 +77,7 @@ class UCCASS_Special_Results extends UCCASS_Main {
         }
 
         if (isset($_SESSION['filter_text'][$sid]) && isset($_SESSION['filter'][$sid]) && strlen($_SESSION['filter_text'][$sid]) > 0) {
-            $this->smarty->assign_by_ref('filter_text', $_SESSION['filter_text'][$sid]);
+            $this->smarty->assignByRef('filter_text', $_SESSION['filter_text'][$sid]);
         } else {
             $_SESSION['filter'][$sid] = '';
         }
@@ -129,8 +129,8 @@ class UCCASS_Special_Results extends UCCASS_Main {
             $data['answers'][$x][] = $answers[$x]['date'];
         }
 
-        $this->smarty->assign_by_ref('data', $data);
-        $this->smarty->assign_by_ref('survey', $survey);
+        $this->smarty->assignByRef('data', $data);
+        $this->smarty->assignByRef('survey', $survey);
         return $this->smarty->fetch($this->template . '/results_table.tpl');
     }
 
@@ -176,7 +176,7 @@ class UCCASS_Special_Results extends UCCASS_Main {
         }
 
         if (isset($_SESSION['filter_text'][$sid]) && isset($_SESSION['filter'][$sid]) && strlen($_SESSION['filter_text'][$sid]) > 0) {
-            $this->smarty->assign_by_ref('filter_text', $_SESSION['filter_text'][$sid]);
+            $this->smarty->assignByRef('filter_text', $_SESSION['filter_text'][$sid]);
         } else {
             $_SESSION['filter'][$sid] = '';
         }

@@ -192,9 +192,9 @@ class UCCASS_AnswerTypes extends UCCASS_Main {
         }
         $data['sid'] = $input['sid'];
 
-        $this->smarty->assign_by_ref('input', $input);
-        $this->smarty->assign_by_ref('show', $show);
-        $this->smarty->assign_by_ref('data', $data);
+        $this->smarty->assignByRef('input', $input);
+        $this->smarty->assignByRef('show', $show);
+        $this->smarty->assignByRef('data', $data);
 
         $data['links'] = $this->smarty->fetch($this->template . '/edit_survey_links.tpl');
         $data['content'] = $this->smarty->fetch($this->template . '/edit_survey_new_at.tpl');
@@ -310,7 +310,7 @@ class UCCASS_AnswerTypes extends UCCASS_Main {
             }
 
             $show['del_message'] = TRUE;
-            $this->smarty->assign_by_ref('show', $show);
+            $this->smarty->assignByRef('show', $show);
 
             return $this->edit_answer_type_choose($sid);
         } elseif (isset($_REQUEST['delete_submit'])) {
@@ -516,7 +516,7 @@ class UCCASS_AnswerTypes extends UCCASS_Main {
                 }
             }
 
-            $this->smarty->assign_by_ref('answer', $input);
+            $this->smarty->assignByRef('answer', $input);
         }
 
         if ($load_answer) {
@@ -562,7 +562,7 @@ class UCCASS_AnswerTypes extends UCCASS_Main {
                     $answer['show_add_answers'] = TRUE;
                 }
 
-                $this->smarty->assign_by_ref('answer', $answer);
+                $this->smarty->assignByRef('answer', $answer);
             } else {
                 $error = "Invalid answer type";
             }
@@ -582,8 +582,8 @@ class UCCASS_AnswerTypes extends UCCASS_Main {
         }
 
         $data['sid'] = $input['sid'];
-        $this->smarty->assign_by_ref('data', $data);
-        $this->smarty->assign_by_ref('show', $show);
+        $this->smarty->assignByRef('data', $data);
+        $this->smarty->assignByRef('show', $show);
         $data['links'] = $this->smarty->Fetch($this->template . '/edit_survey_links.tpl');
 
 
@@ -615,13 +615,13 @@ class UCCASS_AnswerTypes extends UCCASS_Main {
         $data['sid'] = $answer['sid'];
 
         $this->smarty->assign('answer', $answer);
-        $this->smarty->assign_by_ref('data', $data);
+        $this->smarty->assignByRef('data', $data);
 
         $data['links'] = $this->smarty->Fetch($this->template . '/edit_survey_links.tpl');
 
         $data['content'] = $this->smarty->Fetch($this->template . '/edit_survey_edit_atc.tpl');
 
-        $this->smarty->assign_by_ref('show', $show);
+        $this->smarty->assignByRef('show', $show);
 
         $retval = $this->smarty->Fetch($this->template . '/edit_survey.tpl');
 

@@ -279,40 +279,40 @@ class UCCASS_Results extends UCCASS_Main {
         $survey['export_csv_text'] = EXPORT_CSV_TEXT;
         $survey['export_csv_numeric'] = EXPORT_CSV_NUMERIC;
 
-        $this->smarty->assign_by_ref('survey', $survey);
-        $this->smarty->assign_by_ref('question', $question);
-        $this->smarty->assign_by_ref('qid', $qid);
-        $this->smarty->assign_by_ref('question_num', $question_num);
+        $this->smarty->assignByRef('survey', $survey);
+        $this->smarty->assignByRef('question', $question);
+        $this->smarty->assignByRef('qid', $qid);
+        $this->smarty->assignByRef('question_num', $question_num);
 
         if (isset($num_required)) {
-            $this->smarty->assign_by_ref('num_required', $num_required);
+            $this->smarty->assignByRef('num_required', $num_required);
         }
         if (isset($answer)) {
-            $this->smarty->assign_by_ref('answer', $answer);
+            $this->smarty->assignByRef('answer', $answer);
         }
         if (isset($num_answers)) {
-            $this->smarty->assign_by_ref('num_answers', $num_answers);
+            $this->smarty->assignByRef('num_answers', $num_answers);
         }
         if (isset($count)) {
-            $this->smarty->assign_by_ref('count', $count);
+            $this->smarty->assignByRef('count', $count);
         }
         if (isset($text)) {
-            $this->smarty->assign_by_ref('text', $text);
+            $this->smarty->assignByRef('text', $text);
         }
         if (isset($total)) {
-            $this->smarty->assign_by_ref('total', $total);
+            $this->smarty->assignByRef('total', $total);
         }
         if (isset($percent)) {
-            $this->smarty->assign_by_ref('percent', $percent);
+            $this->smarty->assignByRef('percent', $percent);
         }
         if (isset($width)) {
-            $this->smarty->assign_by_ref('width', $width);
+            $this->smarty->assignByRef('width', $width);
         }
         if (isset($height)) {
-            $this->smarty->assign_by_ref('height', $height);
+            $this->smarty->assignByRef('height', $height);
         }
         if (isset($show)) {
-            $this->smarty->assign_by_ref('show', $show);
+            $this->smarty->assignByRef('show', $show);
         }
 
         $retval = $this->smarty->fetch($this->template . '/results.tpl');
@@ -449,7 +449,7 @@ class UCCASS_Results extends UCCASS_Main {
         $this->smarty->assign('qnum', $qnum);
 
         if (isset($answer)) {
-            $this->smarty->assign_by_ref('answer', $answer);
+            $this->smarty->assignByRef('answer', $answer);
         }
 
         $this->smarty->assign('sid', $sid);

@@ -56,11 +56,18 @@ define('WORDCODE_NUMWORDS', 2);
 
 class UCCASS_EditSurvey extends UCCASS_Main {
 
+    /**
+     * @var array
+     */
+    public $data;
+
     //Load configuration and initialize data variable
-    function __construct() {
+    public function __construct() {
         $this->load_configuration();
         $this->data = array();
     }
+
+
 
     //Show edit survey page based upon request variables
     function show($sid) {
@@ -176,7 +183,7 @@ class UCCASS_EditSurvey extends UCCASS_Main {
                 break;
         }
 
-        $this->smarty->assign_by_ref('data', $this->data);
+        $this->smarty->assignByRef('data', $this->data);
 
         //Retrieve template that shows links for edit survey page
         $this->data['links'] = ($this->data['show']['links']) ? $this->smarty->Fetch($this->template . '/edit_survey_links.tpl') : '';
@@ -1718,7 +1725,7 @@ class UCCASS_EditSurvey extends UCCASS_Main {
             //Loop through each user and validate data entered. If the UID passed
             //begins with an 'x', then the data is for a new user
             foreach ($_REQUEST['name'] as $uid => $name) {
-                if ($uid{0} != 'x' || ($uid{0} == 'x' && (!empty($_REQUEST['name'][$uid]) || !empty($_REQUEST['email'][$uid]) || !empty($_REQUEST['username'][$uid]) || !empty($_REQUEST['password'][$uid])))) {
+                if ($uid[0] != 'x' || ($uid[0] == 'x' && (!empty($_REQUEST['name'][$uid]) || !empty($_REQUEST['email'][$uid]) || !empty($_REQUEST['username'][$uid]) || !empty($_REQUEST['password'][$uid])))) {
                     $input = array();
                     //Validate name, email, username and password.
                     $input['name'] = $this->SfStr->getSafeString($_REQUEST['name'][$uid], SAFE_STRING_DB);
@@ -1793,7 +1800,7 @@ class UCCASS_EditSurvey extends UCCASS_Main {
 
                     //Insert or Update new user data
                     if (!isset($erruid[$uid])) {
-                        if ($uid{0} == 'x') {
+                        if ($uid[0] == 'x') {
                             $keyword = 'inserting';
                             $uid = $this->db->GenID($this->CONF['db_tbl_prefix'] . 'users_sequence');
                             $query = "INSERT INTO {$this->CONF['db_tbl_prefix']}users
@@ -1869,7 +1876,7 @@ class UCCASS_EditSurvey extends UCCASS_Main {
             $numtodelete = count($users);
 
             foreach ($users as $uid => $val) {
-                if ($uid{0} != 'x') {
+                if ($uid[0] != 'x') {
                     $uid = (int) $uid;
                     $query = "DELETE FROM {$this->CONF['db_tbl_prefix']}users WHERE uid=$uid AND sid=$sid";
                     $rs = $this->db->Execute($query);
@@ -1915,15 +1922,15 @@ class UCCASS_EditSurvey extends UCCASS_Main {
                 $survey['results_url'] = $this->CONF['html'] . "/results.php?sid=$sid";
                 $survey['edit_url'] = $this->CONF['html'] . "/edit_survey.php?sid=$sid";
 
-                $this->smarty->assign_by_ref('survey', $survey);
+                $this->smarty->assignByRef('survey', $survey);
                 $user = array();
-                $this->smarty->assign_by_ref('user', $user);
+                $this->smarty->assignByRef('user', $user);
 
                 $numtoemail = count($users);
 
                 //Loop through each user and create reminder email.
                 foreach ($users as $uid => $val) {
-                    if ($uid{0} != 'x') {
+                    if ($uid[0] != 'x') {
                         $uid = (int) $uid;
 
                         //Retrieve user information
@@ -1987,7 +1994,7 @@ class UCCASS_EditSurvey extends UCCASS_Main {
         $retval = array();
 
         //Fetch selected email template
-        if ($template{0} != '/') {
+        if ($template[0] != '/') {
             $template = '/' . $template;
         }
         $template = $survey['template'] . $template;
@@ -2037,7 +2044,7 @@ class UCCASS_EditSurvey extends UCCASS_Main {
             $numtomove = count($users);
 
             foreach ($users as $uid => $val) {
-                if ($uid{0} != 'x') {
+                if ($uid[0] != 'x') {
                     $uid = (int) $uid;
                     $query = "UPDATE {$this->CONF['db_tbl_prefix']}users SET status=$status WHERE uid=$uid AND sid=$sid";
                     $rs = $this->db->Execute($query);
@@ -2074,7 +2081,7 @@ class UCCASS_EditSurvey extends UCCASS_Main {
         //of UID is 'x', then the information is for a new invitee
         if (!empty($_REQUEST['invite_name'])) {
             foreach ($_REQUEST['invite_name'] as $uid => $name) {
-                if ($uid{0} != 'x' || ($uid{0} == 'x' && (!empty($_REQUEST['invite_name'][$uid]) || !empty($_REQUEST['invite_email'][$uid])))) {
+                if ($uid[0] != 'x' || ($uid[0] == 'x' && (!empty($_REQUEST['invite_name'][$uid]) || !empty($_REQUEST['invite_email'][$uid])))) {
                     //Validate email address (required)
                     if (empty($_REQUEST['invite_email'][$uid])) {
                         $error[1] = 'Email address is required for invitee.';
@@ -2098,7 +2105,7 @@ class UCCASS_EditSurvey extends UCCASS_Main {
 
                     //If there were no errors, INSERT or UPDATE invitee information
                     if (!isset($erruid[$uid])) {
-                        if ($uid{0} == 'x') {
+                        if ($uid[0] == 'x') {
                             $uid = $this->db->GenID($this->CONF['db_tbl_prefix'] . 'users_sequence');
                             $query = "INSERT INTO {$this->CONF['db_tbl_prefix']}users (uid, sid, name, email, status, results_priv)
                                       VALUES ($uid, $sid, {$input['name']}, {$input['email']}, {$input['status']},{$input['results_priv']})";
@@ -2180,15 +2187,15 @@ class UCCASS_EditSurvey extends UCCASS_Main {
                 $survey['take_url'] = $this->CONF['html'] . "/survey.php?sid=$sid";
                 $survey['results_url'] = $this->CONF['html'] . "/results.php?sid=$sid";
 
-                $this->smarty->assign_by_ref('survey', $survey);
+                $this->smarty->assignByRef('survey', $survey);
                 $user = array();
-                $this->smarty->assign_by_ref('user', $user);
+                $this->smarty->assignByRef('user', $user);
 
                 $numtoemail = count($users);
 
                 $uid_list = '';
                 foreach ($users as $uid => $val) {
-                    if ($uid{0} != 'x') {
+                    if ($uid[0] != 'x') {
                         $uid_list .= (int) $uid . ',';
                     } else {
                         $numtoemail--;

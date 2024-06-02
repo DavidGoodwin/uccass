@@ -104,7 +104,7 @@ class UCCASS_SurveyAdmin extends UCCASS_Main {
             }
         }
 
-        $this->smarty->assign_by_ref('data', $data);
+        $this->smarty->assignByRef('data', $data);
         $retval = $this->smarty->Fetch($this->template . '/' . $template);
 
         return $retval;
@@ -132,7 +132,7 @@ class UCCASS_SurveyAdmin extends UCCASS_Main {
             }
 
             foreach ($_REQUEST['delete'] as $uid => $val) {
-                if ($uid{0} != 'x') {
+                if ($uid[0] != 'x') {
                     if ($uber_admin || !$this->is_user_admin($uid)) {
                         $rs = $this->delete_user($uid);
                         if ($rs === FALSE) {
@@ -153,7 +153,7 @@ class UCCASS_SurveyAdmin extends UCCASS_Main {
 
         foreach ($_REQUEST['name'] as $uid => $name) {
             if (empty($name) && empty($_REQUEST['email'][$uid]) && empty($_REQUEST['username'][$uid]) && empty($_REQUEST['password'][$uid])) {
-                if ($uid{0} != 'x') {
+                if ($uid[0] != 'x') {
                     $rs = $this->delete_user($uid);
                     if ($rs === FALSE) {
                         $errmsg[0] = "Cannot delete user with uid: $uid. Reason: " . $this->db->ErrorMsg();
@@ -234,7 +234,7 @@ class UCCASS_SurveyAdmin extends UCCASS_Main {
                 if (!isset($erruid[$uid])) {
                     $add = 0;
 
-                    if ($uid{0} == 'x') {
+                    if ($uid[0] == 'x') {
                         $uid = $this->db->GenID($this->CONF['db_tbl_prefix'] . 'users_sequence');
                         $query = "INSERT INTO {$this->CONF['db_tbl_prefix']}users
                                   ({$input['create_col']} {$input['admin_col']} uid, sid, name, email, username, password, salt)
@@ -338,8 +338,8 @@ class UCCASS_SurveyAdmin extends UCCASS_Main {
 
         // If they've not clicked "Update Password", show them the page allowing them to update the password.
         if (!isset($_REQUEST['update_password'])) {
-            $this->smarty->assign_by_ref('uid', $uid);
-            $this->smarty->assign_by_ref('username', $this->SfStr->getSafeString($username, SAFE_STRING_TEXT));
+            $this->smarty->assignByRef('uid', $uid);
+            $this->smarty->assignByRef('username', $this->SfStr->getSafeString($username, SAFE_STRING_TEXT));
             return;
         } else {
             // They've entered a new password. Check it.

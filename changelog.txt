@@ -1,3 +1,12 @@
+Version ??
+
+  2024-06-02
+
+     Upgrade libraries (security fixes, token support for PHP8)
+     Cope with PHP deprecations (e.g. $var{x} => $var[x])
+     Add (some) missing class properties
+
+
 Version 1.9.0
   
   2008-01-18
@@ -804,7 +813,7 @@ Version 0.95.2
   2003-09-02
 
     Changed multiple calls of $smarty->assign() to
-    $smarty->assign_by_ref() for performance increase
+    $smarty->assignByRef() for performance increase
     for large arrays.
 
     Split edit_survey template into multiple templates, one
