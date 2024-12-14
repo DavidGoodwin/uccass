@@ -22,7 +22,7 @@
 class UCCASS_Survey extends UCCASS_Main {
 
 
-    private $survey_name = '';
+    public $survey_name = '';
 
     /**
      * Get available surveys (html)

@@ -373,44 +373,63 @@ class UCCASS_Main {
      * RETRIEVE ANSWER VALUES *
      * *********************** */
 
-    function get_answer_values($id, $by = BY_AID, $mode = SAFE_STRING_TEXT) {
-        $retval = FALSE;
+     function get_answer_values($id, $by = BY_AID, $mode = SAFE_STRING_TEXT) {
+        $retval = false;
         static $answer_values;
-
+    
+        // Ensure $id is an integer
         $id = (int) $id;
         $sid = (int) $_REQUEST['sid'];
-
+    
+        // Check if we already have the values cached
         if (isset($answer_values[$id])) {
-            $retval = $answer_values[$id];
-        } else {
-            if ($by == BY_QID) {
-                $query = "SELECT av.avid, av.value, av.numeric_value, av.image FROM {$this->CONF['db_tbl_prefix']}answer_values av,
-                          {$this->CONF['db_tbl_prefix']}questions q WHERE q.aid = av.aid AND q.qid = $id AND q.sid = $sid
-                          ORDER BY av.avid ASC";
-            } else {
-                $query = "SELECT av.avid, av.value, av.numeric_value, av.image FROM {$this->CONF['db_tbl_prefix']}answer_values av
-                          WHERE aid = $id ORDER BY avid ASC";
-            }
-
-            $rs = $this->db->Execute($query);
-            if ($rs === FALSE) {
-                return $this->error("Error getting answer values: " . $this->db->ErrorMsg());
-            }
-
-            while ($r = $rs->FetchRow($rs)) {
-                $retval['avid'][] = $r['avid'];
-                $retval['value'][] = $this->SfStr->getSafeString($r['value'], $mode);
-                $retval['numeric_value'][] = $r['numeric_value'];
-                $retval['image'][] = $r['image'];
-                $retval[$r['avid']] = $r['value'];
-            }
-
-            $answer_values[$id] = $retval;
+            return $answer_values[$id];
         }
-
+    
+        // Initialize $retval arrays before appending
+        $retval = [
+            'avid' => [],
+            'value' => [],
+            'numeric_value' => [],
+            'image' => []
+        ];
+    
+        // Construct the query based on $by value
+        if ($by == BY_QID) {
+            $query = "SELECT av.avid, av.value, av.numeric_value, av.image 
+                      FROM {$this->CONF['db_tbl_prefix']}answer_values av
+                      JOIN {$this->CONF['db_tbl_prefix']}questions q
+                      ON q.aid = av.aid
+                      WHERE q.qid = $id AND q.sid = $sid
+                      ORDER BY av.avid ASC";
+        } else {
+            $query = "SELECT av.avid, av.value, av.numeric_value, av.image
+                      FROM {$this->CONF['db_tbl_prefix']}answer_values av
+                      WHERE av.aid = $id
+                      ORDER BY av.avid ASC";
+        }
+    
+        // Execute the query and check for errors
+        $rs = $this->db->Execute($query);
+        if ($rs === false) {
+            return $this->error("Error getting answer values: " . $this->db->ErrorMsg());
+        }
+    
+        // Process the result
+        while ($r = $rs->FetchRow()) {
+            $retval['avid'][] = $r['avid'];  // Appending to initialized array
+            $retval['value'][] = $this->SfStr->getSafeString($r['value'], $mode);  // Appending to initialized array
+            $retval['numeric_value'][] = $r['numeric_value'];  // Appending to initialized array
+            $retval['image'][] = $r['image'];  // Appending to initialized array
+            $retval[$r['avid']] = $r['value'];
+        }
+    
+        // Cache the results
+        $answer_values[$id] = $retval;
+    
         return $retval;
     }
-
+    
     /*     * *************************
      * DISPLAY POSSIBLE ANSWERS *
      * ************************* */
